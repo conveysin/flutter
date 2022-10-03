@@ -14,6 +14,11 @@ abstract class CacheKeys {
 
   static final String isLogin = 'islogin';
   static final String profile = 'profile';
+  static final String config = 'config';
+  static final String logo = 'Logo';
+  static final String villageID = 'villageID';
+  static final String userType = 'UserType';
+  static final String is_editor = 'is_editor';
 }
 
 abstract class CacheHelper {
@@ -30,6 +35,23 @@ abstract class CacheHelper {
   Future<String> getProfileData();
 
   Future saveProfileData(String userInfo);
+
+  Future<String> getConfigScreenData();
+  Future saveConfigScreenData(String configData);
+
+  Future<String> getLogo();
+  Future saveLogo(String logo);
+
+  Future<String> getVillage();
+  Future saveVillage(String villageID);
+
+
+  Future<String> isUserType();
+
+  Future setUserType(String token);
+
+  Future<bool> getEditor();
+  Future setEditor(bool isEditor);
 
 }
 
@@ -79,6 +101,63 @@ class CacheHelperImpl extends CacheHelper {
 
     return _cache.putString(CacheKeys.userInfo, userInfo);
   }
+
+  @override
+  Future saveConfigScreenData(String configData) {
+    return _cache.putString(CacheKeys.config, configData);
+  }
+
+  @override
+  Future<String> getConfigScreenData() {
+    return _cache.getString(CacheKeys.config);
+  }
+
+  @override
+  Future<String> getLogo() {
+    return _cache.getString(CacheKeys.logo);
+  }
+
+  @override
+  Future saveLogo(String logo) {
+    return _cache.putString(CacheKeys.logo, logo);
+  }
+
+
+  @override
+  Future<String> getVillage() {
+    return _cache.getString(CacheKeys.villageID);
+  }
+
+  @override
+  Future saveVillage(String villageID) {
+    return _cache.putString(CacheKeys.villageID, villageID);
+  }
+
+  @override
+  Future<String> isUserType() {
+    return _cache.getString(CacheKeys.userType);
+  }
+
+  @override
+  Future setUserType(String userType) {
+    return _cache.putString(CacheKeys.userType, userType);
+  }
+
+  @override
+  Future<bool> getEditor() async {
+    bool? result= await _cache.getBool(CacheKeys.is_editor);
+    if(result == null){
+      result = false;
+    }
+    return result!;
+  }
+
+  @override
+  Future setEditor(bool is_editor) {
+    return _cache.putBool(CacheKeys.is_editor, is_editor);
+  }
+
+
 
   // static Future<void> setFlowSubscriptionPref(SubscriptionAdd subData) async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -17,7 +17,8 @@ class UsernameEditText extends StatelessWidget {
     required this.usernameType,
     required this.hinttext,
     required this.keyboardtype,
-
+        this.maxLines=1,
+        this.minLines=1,
      this.onChange,
   }) : super(key: key);
   final TextEditingController editTextController;
@@ -30,6 +31,8 @@ class UsernameEditText extends StatelessWidget {
 
   final TextInputType keyboardtype;
   final Function? onChange;
+  final int minLines ;
+  final int maxLines ;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +40,8 @@ class UsernameEditText extends StatelessWidget {
    // final l10n = context.l10n;
     return Container(
       child: TextFormField(
+        minLines: minLines,
+        maxLines: maxLines,
         obscureText: textObsecure!,
         enableInteractiveSelection: false,
         controller: editTextController,

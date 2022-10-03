@@ -1,29 +1,26 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:getinforme/Model/SettingModel.dart';
 import 'package:getinforme/Thems/Responsive.dart';
-import 'package:getinforme/core/bundle.dart';
-import 'package:getinforme/utility/spaces.dart';
-import 'package:getinforme/utility/strings.dart';
+import 'package:getinforme/feature/signup/bloc/signup_bloc.dart';
+import 'package:getinforme/widgets/AppLoader.dart';
+
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
-
-import '../../Thems/color_palette.dart';
 import '../../core/app_screen.dart';
+import '../../core/bundle.dart';
 import '../../core/routes.dart';
 import '../../data/data_helper.dart';
 import '../../utility/colors.dart';
 import '../../utility/images.dart';
+import '../../utility/spaces.dart';
+import '../../utility/strings.dart';
 import '../../widgets/primary_button.dart';
-import 'bloc/login_bloc.dart';
-import 'bloc/login_event.dart';
+import 'bloc/signup_event.dart';
 
 class EnterOtpScreen extends AppScreen {
   EnterOtpScreen({
@@ -37,47 +34,45 @@ class EnterOtpScreen extends AppScreen {
 }
 
 class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
-  late LoginBloc _loginBloc;
+  late SignupBloc _signupBloc;
   final TextEditingController _otpController = TextEditingController();
   final DataHelper _dataHelper = DataHelperImpl.instance;
   OtpFieldController otpController = OtpFieldController();
   bool isShowTimer = true;
+  String logoURl = '';
 
+  String otp = '';
 
   @override
-  void onInit() {
-    _loginBloc = BlocProvider.of<LoginBloc>(context);
+  Future<void> onInit() async {
+    _signupBloc = BlocProvider.of<SignupBloc>(context);
     _otpController.addListener(_onOtpChanged);
-    _otpController.text = '123456';
     startTimer();
-    super.onInit();
+    _getConfigData();
+   if(widget.arguments?.get('isVerify') !=null && widget.arguments?.get('isVerify').toString().toLowerCase()=='0'){
+     var userID =
+     widget.arguments?.get('userID');
+     _onLoginPressed(userID.toString());
+   }
+   super.onInit();
   }
 
   void _onOtpChanged() {
-    _loginBloc.add(OtpChanged(_otpController.text));
+    _signupBloc.add(OtpChanged(_otpController.text));
   }
 
-  void _onOtpPressed() async {
-    // if (widget.arguments?.get('mobile') != null) {
-    //   isfromInitialScreen = widget.arguments?.get('mobile');
-    // }
-    final DataHelper _dataHelper = DataHelperImpl.instance;
-
-    var sw = await _dataHelper.cacheHelper.getAccessToken();
-    print("dddd");
-    _loginBloc.add(
-      LoginWithCredentialsOtp(widget.arguments?.get('mobile'), sw),
-    );
+  void _onOtpPressed(user_id, otp) {
+    _signupBloc.verifyOtp(user_id, otp);
   }
 
-  void _onLoginPressed() {
+  void _onLoginPressed(String userId) {
     setState(() {
+      print('userId>$userId');
       isShowTimer = true;
     });
     startTimer();
-    _loginBloc.add(
-      ResendClicked(widget.arguments?.get('mobile')),
-    );
+
+    _signupBloc.resendOtp(userId);
   }
 
   late Timer timer;
@@ -121,24 +116,29 @@ class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
       type: MaterialType.transparency,
       child: SafeArea(
           child: Container(
-        color: AppColors.backgroundColor,
-     child: FirebasePhoneAuthProvider(
-       child:  VerifyPhoneNumberScreen(phoneNumber: "9131734977"),
-     ),
-
-
-
-     //VerifyPhoneNumberScreen(phoneNumber: '9981271241',),
-     /*   child: BlocConsumer<LoginBloc, LoginState>(
+        color: AppColors.white,
+        child: BlocConsumer<SignupBloc, SignupState>(
           listener: (context, state) {
-            if (state.isSuccess!) {
-              state.isUserExist
-                  ? navigateToScreenAndReplace(Screen.Login)
-                  : navigateToScreenAndReplace(Screen.splash);
+            if (state.isOTPSuccess!) {
+              if(state.verifyOtpData.userType != null){
+                if(state.verifyOtpData.userType?.toLowerCase() == '2'){
+                  final bundle = Bundle()
+                    ..put('mobile', widget.arguments?.get('mobile'));
+                  navigateToScreenAndReplace(Screen.HomeNevigation, bundle);
+                }else{
+                  final bundle = Bundle()
+                    ..put('mobile', widget.arguments?.get('mobile'));
+                  navigateToScreenAndReplace(Screen.HomeNevigation, bundle);
+                }
+              }else{
+                final bundle = Bundle()
+                  ..put('mobile', widget.arguments?.get('mobile'));
+                navigateToScreenAndReplace(Screen.HomeNevigation, bundle);
+              }
             }
-            if (state.isFailure!) {
+            if (state.isOTPFailure!) {
               ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
-                  SnackBar(content: Text('${state.errorMessage}')));
+                  SnackBar(content: Text('${state.errormessage}')));
             }
           },
           builder: (context, state) {
@@ -146,28 +146,38 @@ class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
                 child: Column(
               children: [
                 Container(
-                  height: 50.h - statusBarHeight,
+                  height: 40.h - statusBarHeight,
                   child: Stack(
                     children: [
                       Positioned(
-                        bottom: 1,
-                        right: 15,
-                        child: Container(
-                          color: Colors.transparent,
-                          child: SvgPicture.asset(
-                            ImagePath.letStart,
-                            width: 60.w,
-                            height: 32.h,
-                            alignment: Alignment.center,
-                            fit: BoxFit.fill,
+                        bottom: 0,
+                        right: 5,
+                        left: 5,
+                        child: ( logoURl.isNotEmpty) ?  Container(
+                          height: 30.h,
+                          color: Colors.white,
+                          child: Center(child: logoURl.isNotEmpty ? CachedNetworkImage(
+                            imageUrl: logoURl,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                    colorFilter:
+                                    ColorFilter.mode(Colors.white, BlendMode.colorBurn)),
+                              ),
+                            ),
+                            placeholder: (context, url) => CircularProgressIndicator(),
+                           // errorWidget: (context, url, error) => Icon(Icons.error),
+                          ): AppLoader(),
                           ),
-                        ),
-                      )
+                        ) : new Container( height: 30.h,),
+                      ),
                     ],
                   ),
                 ),
                 Container(
-                    height: 50.h,
+                    height: 55.h,
                     child: Container(
                       padding: EdgeInsets.all(20),
                       width: MediaQuery.of(context).size.width,
@@ -202,9 +212,9 @@ class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
                           ),
                           Container(
                             height: 55,
-                            child: *//*OTPTextField(
+                            child: OTPTextField(
                                 controller: otpController,
-                                length: 6,
+                                length: 4,
                                 otpFieldStyle: OtpFieldStyle(
                                   backgroundColor: Colors.white,
                                   borderColor: AppColors.focusedbordercolor,
@@ -228,14 +238,15 @@ class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
                                 onChanged: (pin) {
                                   print("Changed: " + pin);
                                   _otpController.text = pin;
-                                  _loginBloc.add(OtpChanged(pin));
+                                  otp = pin;
+                                  _signupBloc.add(OtpChanged(pin));
                                 },
                                 onCompleted: (pin) {
                                   print("Completed: " + pin);
+                                  otp = pin;
                                   _otpController.text = pin;
-                                  _loginBloc.add(OtpChanged(pin));
-                                })*//*
-                              VerifyPhoneNumberScreen(phoneNumber: '9981271241',),
+                                  _signupBloc.add(OtpChanged(pin));
+                                }),
                           ),
 
 //                           Container(
@@ -297,11 +308,12 @@ class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
                               textSize: 14,
                               isLoading: state.isSubmitting! ? true : false,
                               onPressed: () {
-                                _onOtpPressed();
+                                var userID = widget.arguments?.get('userID');
+                                _onOtpPressed(userID.toString(), otp);
                                 // ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
                                 //     SnackBar(content: Text(StringConst.sentence.OTP_Incorrect)));
                               },
-                              backgroundColor: Colors.blue),
+                              backgroundColor: AppColors.buttonColor),
                           SizedBox(
                             height: 10,
                           ),
@@ -341,7 +353,11 @@ class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
                                       child: InkWell(
                                         onTap: () {
                                           print("sasds");
-                                          _onLoginPressed();
+                                          otpController.clear();
+                                          var userID =
+                                              widget.arguments?.get('userID');
+                                          _onLoginPressed(userID.toString());
+                                          //_otpController.text='';
                                         },
                                         child: Padding(
                                           padding: EdgeInsets.only(
@@ -365,161 +381,19 @@ class _EnterOtpScreenState extends AppScreenState<EnterOtpScreen> {
               ],
             ));
           },
-        ),*/
+        ),
       )),
     );
   }
-}
 
-// ignore: must_be_immutable
-class VerifyPhoneNumberScreen extends StatelessWidget {
-  final String phoneNumber;
+   _getConfigData() async {
+     var logo='';
+     _dataHelper.cacheHelper.getLogo().then((value) {
+        logo = value;
+        setState(()  {
+          logoURl = logo.toString().trim();
+        });
+     });
 
-  String? _enteredOTP;
-
-  VerifyPhoneNumberScreen({
-    Key? key,
-    required this.phoneNumber,
-  }) : super(key: key);
-
-  void _showSnackBar(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(text)),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: FirebasePhoneAuthHandler(
-
-        phoneNumber: '+91$phoneNumber',
-        timeOutDuration: Duration(seconds: 60),
-        onLoginSuccess: (userCredential, autoVerified) async {
-          _showSnackBar(
-            context,
-            'Phone number verified successfully!',
-          );
-
-          debugPrint(
-            autoVerified
-                ? "OTP was fetched automatically"
-                : "OTP was verified manually",
-          );
-
-          debugPrint("Login Success UID: ${userCredential.user?.uid}");
-        },
-        onLoginFailed: (authException) {
-          _showSnackBar(
-            context,
-            'Something went wrong (${authException.message})',
-          );
-
-          debugPrint(authException.message);
-          // handle error further if needed
-        },
-
-        builder: (context, controller) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text("Verify Phone Number"),
-              actions: [
-                if (controller.codeSent)
-                  TextButton(
-                    child: Text(
-                      controller.timerIsActive
-                          ? "${controller.timerCount.inSeconds}s"
-                          : "RESEND",
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 15,
-                      ),
-                    ),
-                    onPressed: controller.timerIsActive
-                        ? null
-                        : () async => await controller.sendOTP(),
-                  ),
-                const SizedBox(width: 5),
-              ],
-            ),
-            body: controller.codeSent
-                ? ListView(
-                    padding: const EdgeInsets.all(20),
-                    children: [
-                      Text(
-                        "We've sent an SMS with a verification code to $phoneNumber",
-                        style: const TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Divider(),
-                      AnimatedContainer(
-                        duration: const Duration(seconds: 1),
-                        height: controller.timerIsActive ? null : 0,
-                        child: Column(
-                          children: const [
-                            CircularProgressIndicator.adaptive(),
-                            SizedBox(height: 50),
-                            Text(
-                              "Listening for OTP",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Divider(),
-                            Text("OR", textAlign: TextAlign.center),
-                            Divider(),
-                          ],
-                        ),
-                      ),
-                      const Text(
-                        "Enter OTP",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      TextField(
-                        maxLength: 6,
-                        keyboardType: TextInputType.number,
-                        onChanged: (String v) async {
-                          _enteredOTP = v;
-                          if (_enteredOTP?.length == 6) {
-                            final isValidOTP = await controller.verifyOTP(
-                              otp: _enteredOTP!,
-                            );
-                            // Incorrect OTP
-                            if (!isValidOTP) {
-                              _showSnackBar(
-                                context,
-                                "Please enter the correct OTP sent to $phoneNumber",
-                              );
-                            }
-                          }
-                        },
-                      ),
-                    ],
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      CircularProgressIndicator.adaptive(),
-                      SizedBox(height: 50),
-                      Center(
-                        child: Text(
-                          "Sending OTP",
-                          style: TextStyle(fontSize: 25),
-                        ),
-                      ),
-                    ],
-                  ),
-          );
-        },
-      ),
-    );
   }
 }

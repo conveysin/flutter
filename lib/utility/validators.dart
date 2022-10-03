@@ -10,6 +10,10 @@ class Validators {
   static final RegExp _passwordRegExp = RegExp(
     r'^.{8}',
   );
+
+  static final RegExp _loginpasswordRegExp = RegExp(
+    r'^.{4,}',
+  );
   static final RegExp _nameRegExp =
       RegExp(r'^[a-zA-Z]{2,}(?: [a-zA-Z]+){0,1}$');
 
@@ -59,6 +63,9 @@ class Validators {
 
   static bool isValidPassword(String password) {
     return _passwordRegExp.hasMatch(password);
+  }
+  static bool isValidLoginPassword(String password) {
+    return _loginpasswordRegExp.hasMatch(password);
   }
 
   static bool isValidPincode(String pincode) {

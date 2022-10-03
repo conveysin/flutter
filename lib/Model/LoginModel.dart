@@ -1,14 +1,14 @@
 class LoginModel {
   int? status;
   String? msg;
-  Data? data;
+  LoginData? data;
 
   LoginModel({this.status, this.msg, this.data});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     msg = json['msg'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new LoginData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,7 +22,7 @@ class LoginModel {
   }
 }
 
-class Data {
+class LoginData {
   String? name;
   String? mobile;
   String? district;
@@ -31,8 +31,11 @@ class Data {
   String? status;
   String? mobileVerify;
   String? userType;
+  String? is_verify;
+  String? user_id;
+  String? village_id;
 
-  Data(
+  LoginData(
       {this.name,
         this.mobile,
         this.district,
@@ -40,9 +43,14 @@ class Data {
         this.village,
         this.status,
         this.mobileVerify,
-        this.userType});
+        this.userType,
+        this.is_verify,
+        this.user_id,
+        this.village_id,
 
-  Data.fromJson(Map<String, dynamic> json) {
+      });
+
+  LoginData.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     mobile = json['mobile'];
     district = json['district'];
@@ -51,6 +59,9 @@ class Data {
     status = json['status'];
     mobileVerify = json['mobile_verify'];
     userType = json['user_type'];
+    is_verify = json['is_verify'];
+    user_id = json['user_id'];
+    village_id = json['village_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +74,9 @@ class Data {
     data['status'] = this.status;
     data['mobile_verify'] = this.mobileVerify;
     data['user_type'] = this.userType;
+    data['is_verify'] = this.is_verify;
+    data['user_id'] = this.user_id;
+    data['village_id'] = this.village_id;
     return data;
   }
 }

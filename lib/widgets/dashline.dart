@@ -6,7 +6,7 @@ class DashLine extends StatelessWidget {
   final double height;
   final Color color;
 
-  const DashLine({this.height = 1, this.color = AppColors.timercolor});
+  const DashLine({this.height = 1, this.color = AppColors.black});
 
   @override
   Widget build(BuildContext context) {

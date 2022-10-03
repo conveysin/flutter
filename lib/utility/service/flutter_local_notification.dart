@@ -28,13 +28,13 @@ static void display(RemoteMessage message) async {
    NotificationDetails notificationDetails = NotificationDetails(
    
     iOS: IOSNotificationDetails(),
-        android: AndroidNotificationDetails('123','qwerty')
+        android: AndroidNotificationDetails(id.toString(),'android')
    );
 
    
    await _flutterLocalNotificationsPlugin.show(id,
-       message.notification?.title,
-       message.notification?.body,
+       message.data['title'],
+       message.data['body'],
        notificationDetails,
    payload: message.data['attachment_url']);
  } on Exception catch (e) {

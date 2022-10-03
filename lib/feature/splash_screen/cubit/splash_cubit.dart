@@ -15,27 +15,30 @@ class SplashCubit extends Cubit<SplashState> {
   final DataHelper _dataHelper = DataHelperImpl.instance;
 
 
-  Future<void> fetchSetting() async {
+  Future<void> fetchSetting(String userID) async {
     emit(state.copyWith(isLoading: true));
-    final dailyQuoteResponse = await _dataHelper.apiHelper.getSetting();
+    final dailyQuoteResponse = await _dataHelper.apiHelper.getSetting(userID);
     dailyQuoteResponse.fold((l) {
       emit(state.copyWith(isLoading: false,isFailure: true,errormessage: l.errorMessage));
-    }, (r) {
+    }, (r) async {
+      await _dataHelper.cacheHelper.saveLogo(r.data![0].logo.toString());
+      await _dataHelper.cacheHelper.setEditor(r.data![0].is_editor);
+      print('EDITOR_STATUS>>>${_dataHelper.cacheHelper.getEditor()}');
       emit(state.copyWith(isLoading: false,settingData: r.data));
     });
   }
 
 
 
-/*  Future<void> getLoggedInStatus() async {
+  Future<void> getLoggedInStatus() async {
     try {
       final result = await _dataHelper.cacheHelper.isLogin();
       if (result.isNotEmpty) {
-        emit(LoggedInState(result == "1" ? true : false));
+        emit(state.copyWith(isLoading: false,isLoggedIn:result == "1" ? true : false));
       } else
-        emit(LoggedInState(false));
+        emit(state.copyWith(isLoading: false,isLoggedIn:false));
     } catch (e) {
-      emit(LoggedInState(false));
+      emit(state.copyWith(isLoading: false,isLoggedIn: false));
     }
-  }*/
+  }
 }

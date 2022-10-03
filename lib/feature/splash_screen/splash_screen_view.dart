@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getinforme/core/app_screen.dart';
 import 'package:getinforme/core/bundle.dart';
+import 'package:getinforme/data/data_helper.dart';
 import 'package:getinforme/feature/login_screen/myloginpage.dart';
 import 'package:getinforme/widgets/AppLoader.dart';
-
 
 import '../../core/routes.dart';
 import '../Onbording/IntroScreenBody.dart';
@@ -27,15 +27,31 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
   late SplashCubit _splashCubit;
   late final AnimationController _controller;
   late final Duration _splashEndDuration;
-  bool isSkip= false;
+  bool isSkip = false;
+  final DataHelper _dataHelper = DataHelperImpl.instance;
+  String result = '', userType = '';
+  String userID = '0';
+
 
   @override
   Future<void> onInit() async {
     _controller = AnimationController(vsync: this);
     _splashCubit = BlocProvider.of<SplashCubit>(context);
-    _splashCubit.fetchSetting();
+
+    result = await _dataHelper.cacheHelper.isLogin();
+    userType = await _dataHelper.cacheHelper.isUserType();
+    _getUserId();
+
     await FirebaseAuth.instance.signOut();
     super.onInit();
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getUserId();
   }
 
   @override
@@ -46,63 +62,65 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
 
   @override
   Widget setView() {
-    return BlocConsumer<SplashCubit, SplashState>(
-      listener: (context, state) {
-        if (state.isSuccess!) {
-          ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
-              SnackBar(content: Text('${"Registration Successfully"}')));
-   //       final bundle = Bundle()..put('mobile', _mobileController.text);
-       //   navigateToScreenAndReplace(Screen.Login, bundle);
+    return BlocConsumer<SplashCubit, SplashState>(listener: (context, state) {
+      if (state.isSuccess!) {}
+      if (state.isFailure!) {
+        if (state.errormessage != null)
+          ScaffoldMessenger.of(globalKey.currentContext!)
+              .showSnackBar(SnackBar(content: Text('${state.errormessage}')));
+      }
+
+      Future.delayed(const Duration(seconds: 5), () {
+        if (!isSkip) {
+          if (result == "1") {
+            if (userType.toLowerCase() == '2') {
+              navigateToScreen(Screen.HomeNevigation);
+            } else {
+              navigateToScreen(Screen.HomeNevigation);
+            }
+          } else {
+            navigateToScreen(Screen.Login);
+          }
         }
-        if (state.isFailure!) {
-          if(state.errormessage!=null)
-            ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
-                SnackBar(content: Text('${state.errormessage}')));
-        }
-
-        Future.delayed(const Duration(seconds: 5), () {
-          if(!isSkip)
-            navigateToScreenAndReplace(Screen.Login);
-        });
-
-      /*  if (state is LoggedInState)
-          Future.delayed(const Duration(seconds: 5), () {
-            if (state.isLoggedIn)
-              navigateToScreenAndReplace(Screen.Login);
-          });*/
-      },
-
-    builder: (context, state) {
-        if(!state.isLoading!)
-      return SafeArea(
-        child: Container(
-          color: Colors.white,
-          child: IntroScreenBody(
-            onGetstart: () {
-              setState(() {
-                isSkip = true;
-              });
-            //  navigateToScreen(Screen.Login);
-              final bundle = Bundle()..put('mobile', '9131734977');
-           //   navigateToScreenAndReplace(context,bundle);
-              //  _navigateToNextScreen(context);
-         //     navigateToScreenAndReplace(Screen.OTP, bundle);
-            }, settingData: state.settingData!=null ? state.settingData : [],
+      });
+    }, builder: (context, state) {
+      if (!state.isLoading!)
+        return SafeArea(
+          child: Container(
+            color: Colors.white,
+            child: IntroScreenBody(
+              onGetstart: () {
+                setState(() {
+                  isSkip = true;
+                  if (result == "1") {
+                    if (userType.toLowerCase() == '2') {
+                      navigateToScreen(Screen.HomeNevigation);
+                    } else {
+                      navigateToScreen(Screen.HomeNevigation);
+                    }
+                  } else {
+                    navigateToScreen(Screen.Login);
+                  }
+                });
+              },
+              settingData: state.settingData != null ? state.settingData : [],
+            ),
           ),
-        ),
-      );
+        );
       return AppLoader(
-      isLoading: true,
-      );;
-    }
-    );
-
+        isLoading: true,
+      );
+      ;
+    });
   }
-  Future navigateToScreenAndReplace(Screen screen, [Bundle? bundle]) async {
-    bundle ??= Bundle();
-    await Navigator.pushReplacementNamed(context, screen.toString(),
-        arguments: bundle)
-        .then(onBackResult);
+  _getUserId() async {
+    _dataHelper.cacheHelper.getUserInfo().then((value) {
+      setState(() {
+        userID = value;
+        print("UserId>>>>>$userID");
+        _splashCubit.fetchSetting(userID);
+      });
+    });
   }
-
 }
+

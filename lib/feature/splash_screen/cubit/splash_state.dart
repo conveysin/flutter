@@ -6,6 +6,7 @@ part of 'splash_cubit.dart';
   final bool? isFailure;
   final bool? isLoading;
   String? errormessage;
+  final bool isLoggedIn;
 
 
   @override
@@ -14,6 +15,7 @@ part of 'splash_cubit.dart';
     isSuccess!,
     isFailure!,
     isLoading!,
+    isLoggedIn
   ];
 
   SplashState({
@@ -21,7 +23,8 @@ part of 'splash_cubit.dart';
     this.isSuccess,
     this.isFailure,
     this.isLoading,
-    this.errormessage
+    this.errormessage,
+    required this.isLoggedIn,
   });
 
   factory SplashState.empty() {
@@ -30,7 +33,8 @@ part of 'splash_cubit.dart';
         isSuccess: false,
         isFailure: false,
         isLoading: false,
-      errormessage: ''
+      errormessage: '',
+        isLoggedIn: false
     );
   }
   SplashState copyWith({
@@ -38,6 +42,7 @@ part of 'splash_cubit.dart';
     bool? isSuccess,
     bool? isFailure,
     bool? isLoading,
+    bool? isLoggedIn,
     String? errormessage,
   }) {
     return SplashState(
@@ -46,6 +51,7 @@ part of 'splash_cubit.dart';
       isFailure: isFailure ?? this.isFailure,
       isLoading: isLoading ?? this.isLoading,
       errormessage: errormessage ?? this.errormessage,
+      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
     );
   }
 
@@ -53,4 +59,7 @@ part of 'splash_cubit.dart';
   @override
   bool get stringify => true;
 }
+
+
+
 

@@ -1,4 +1,8 @@
-part of 'login_bloc.dart';
+
+
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:getinforme/Model/LoginModel.dart';
 
 @immutable
 class LoginState extends Equatable {
@@ -16,7 +20,8 @@ class LoginState extends Equatable {
         this.isEmailValid,
         this.isResnd = false,
         this.email = '',
-        this.name = ''});
+        this.name = '',
+      required this.loginData });
   factory LoginState.empty() {
     return LoginState(
         isOtpValid: false,
@@ -28,17 +33,20 @@ class LoginState extends Equatable {
         isPassword: false,
         isResnd: false,
         isUserExist:false,
-        errorMessage: '');
+        errorMessage: '',
+    loginData:new LoginData(),);
   }
   factory LoginState.loading(bool isPartial) {
     return LoginState(
         isOtpValid: true,
         isEmailValid: true,
-        isSubmitting: true,
+        isSubmitting: isPartial,
         isSuccess: false,
         isFailure: false,
         isResnd: false,
-        errorMessage: '');
+        errorMessage: '',
+         loginData: new LoginData(),
+    );
   }
   factory LoginState.failure(String errorMessage, bool isPartial) {
     return LoginState(
@@ -49,6 +57,7 @@ class LoginState extends Equatable {
       isFailure: true,
       isResnd: false,
       errorMessage: errorMessage,
+      loginData: new LoginData(),
     );
   }
 
@@ -59,10 +68,11 @@ class LoginState extends Equatable {
       isSuccess: false,
       isFailure: true,
       errorMessage: errorMessage,
+      loginData: new LoginData(),
     );
   }
 
-  factory LoginState.success(bool? isUserExist) {
+  factory LoginState.success(bool? isUserExist,LoginData loginData) {
     return LoginState(
         isOtpValid: true,
         isEmailValid: true,
@@ -71,7 +81,8 @@ class LoginState extends Equatable {
         isFailure: false,
         isResnd: false,
         isUserExist:isUserExist!,
-        errorMessage: '');
+        errorMessage: '',
+        loginData: loginData,);
   }
 
   final bool? isOtpValid;
@@ -89,6 +100,7 @@ class LoginState extends Equatable {
   final String? email;
   final bool isUsernameReadOnly;
   final bool isUserExist;
+  LoginData? loginData;
 
 
   bool get isFormValid => (isMobile);
@@ -130,6 +142,7 @@ class LoginState extends Equatable {
       isOtpValid: isOtpValid ?? this.isOtpValid,
       isEmailValid: isEmailValid ?? this.isEmailValid,
       isResnd: isResnd ?? this.isResnd,
+      loginData: loginData ?? this.loginData,
     );
   }
 
@@ -153,6 +166,7 @@ class LoginState extends Equatable {
     isMobile,
     isPassword,
     isUsernameReadOnly,
-    isResnd,isUserExist
+    isResnd,isUserExist,
+    loginData!
   ];
 }

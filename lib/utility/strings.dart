@@ -8,7 +8,7 @@ class StringConst {
   static CommonButtons commonButtons = const CommonButtons();
 
   //strings
-  static const String APP_NAME = "Narayan App";
+  static const String APP_NAME = "Conveys";
 
   // screen
 
@@ -72,9 +72,11 @@ class SENTENCE {
   String get Total_Cash_back=>'Total Cash Back Earned : ';
   String get Cashback_Transfered=>'Cashback \n Transfered \n  ';
   String get Rs=>'₹ ';
-  String get Enter_your_username_password =>'Enter your username and password';
+  String get Enter_your_username_password =>'Enter your mobile number and password';
+  String get Enter_your_mobile_number =>'Enter your mobile number';
   String get Username =>'Username';
   String get Password =>'Password';
+  String get Old_Password =>'Old Password';
   String get ConfirmPassword => "Confirm Password";
 }
 
@@ -100,7 +102,8 @@ class LABEL {
 
   String get Enter_Amount =>'Enter Amount';
   String get Date_payment => 'Date of Payment';
-  String get logout =>'logout';
+  String get logout =>'Logout';
+  String get menu =>'Menu';
   String get Address_Line =>'Address Line 1*';
   String get Address_Line_hint =>'Flat no, Flat name, Landmark';
   String get Address_Line_two =>'Address Line 2*';
@@ -138,6 +141,7 @@ class LABEL {
   String get Goal =>'Create Goal';
   String get Helpus =>'Help us understand your goals so that we can share the right plans for you';
   String get Goal_Amount =>'Goal Amount';
+  String get dont_account =>'Dont have an account? Register';
 }
 
 class CommonButtons {
@@ -148,6 +152,7 @@ class CommonButtons {
   static const String Get_Started = "Get Started";
   static const String Skip = "Skip";
   static const String Resend = "Resend";
+  static const String Forget_password = "Forget Password";
   static const String Cancel = "Cancel";
   static const String Send_OTP = "Send OTP";
   static const String Sign_in = "Sign in";
@@ -186,5 +191,7 @@ class CommonButtons {
   static const String Delete = "Delete";
   static const String Savingfor = "What are you saving for?";
   static const String goalyear = "How many years to goal?";
+  static const String contact_us = "Contact us";
+  static const String Message = "Message";
 
 }

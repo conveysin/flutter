@@ -30,18 +30,21 @@ class SettingModel {
 class SettingData {
   String? logo;
   String? splashScreen;
+  bool is_editor=false;
 
-  SettingData({this.logo, this.splashScreen});
+  SettingData({this.logo, this.splashScreen,required this.is_editor});
 
   SettingData.fromJson(Map<String, dynamic> json) {
     logo = json['logo'];
     splashScreen = json['splash_screen'];
+    is_editor = json['is_editor'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['logo'] = this.logo;
     data['splash_screen'] = this.splashScreen;
+    data['is_editor'] = this.is_editor;
     return data;
   }
 }

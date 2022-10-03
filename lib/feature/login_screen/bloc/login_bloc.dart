@@ -5,13 +5,14 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
+import 'package:getinforme/feature/login_screen/bloc/login_state.dart';
 
 import '../../../data/data_helper.dart';
 import '../../../utility/validators.dart';
 import 'login_event.dart';
 
 
-part 'login_state.dart';
+
 
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -34,7 +35,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
 
     if (event is PasswordChanged){
-      if (Validators.isValidPassword(event.password)) {
+      if (Validators.isValidLoginPassword(event.password)) {
         yield state.copyWith(
           isPassword: true, );
       }
@@ -77,26 +78,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
          // yield* _loginWithOtp(event);
 
     }
-    else  if (event is getLanguages) {
-
-     // yield* _loginWithOtp(event);
-
-    }else
+    else
       UnimplementedError();
   }
 
   Stream<LoginState> _loginWithCredentials(
       LoginWithCredentialsClicked event) async* {
     print('mobile');
-  //  yield LoginState.loading(false);
+    print('event.device_id>>>'+event.device_id);
+    print('mobile');
+    yield LoginState.loading(true);
     final response = await _dataHelper.apiHelper.executeLogin(
-        event.mobile,event.password);
+        event.mobile,event.password,event.device_id);
+    yield LoginState.loading(false);
     yield* response.fold((l) async* {
       yield LoginState.failure(l.errorMessage,false);
     },  (r) async* {
-     // await _dataHelper.cacheHelper.saveAccessToken(r.data.otp.toString());
-
-      yield LoginState.success(true);
+      await _dataHelper.cacheHelper.setLogin('1');
+      await _dataHelper.cacheHelper.setUserType(r.data!.userType.toString());
+      await _dataHelper.cacheHelper.saveUserInfo(r.data!.user_id.toString());
+      await _dataHelper.cacheHelper.saveVillage(r.data!.village_id.toString());
+      yield LoginState.success(true,r.data!);
       });
 
   }
@@ -104,7 +106,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> _resendOtp(ResendClicked event) async* {
     print('otp');
     final response = await _dataHelper.apiHelper.executeLogin(
-        event.mobile,'');
+        event.mobile,'','');
     yield* response.fold((l) async* {
       yield LoginState.failure(l.errorMessage,false);
     },  (r) async* {
@@ -114,10 +116,5 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
     // });
   }
-
-
-
-
-
 }
 

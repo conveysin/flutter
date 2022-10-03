@@ -9,18 +9,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'app/app.dart';
 import 'app/app_bloc_observer.dart';
 import 'data/data_helper.dart';
+import 'utility/service/flutter_local_notification.dart';
 
 
 
 //Receive message when App is in Background
 Future<void> _messageHandler(RemoteMessage message) async {
-  print('background message ${message.notification?.body}');
+  if(message.data!=null) {
+    print(message.data);
+    FlutterLocalNotification.display(message);
+  }
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
- // FirebaseMessaging.onBackgroundMessage(_messageHandler);
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
   Bloc.observer = AppBlocObserver();
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);

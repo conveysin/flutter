@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:getinforme/data/api/api_helper.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
 
 
 class ApiClient {
@@ -78,6 +78,35 @@ class ApiClient {
       return json.decode(response.body);
     } else {
       throw Exception(response.reasonPhrase);
+    }
+  }
+  dynamic postMultiPart(String api,String filePath, int? userId) async {
+    try {
+      print('filePath postMultiPart ->' + filePath);
+      print('userId postMultiPart ->' + userId.toString());
+      var request = new http.MultipartRequest(
+          'POST', Uri.parse(ApiEndPoints.BASE_URL+api));
+      request.fields.addAll({'userId': userId.toString()});
+      request.files.add(await http.MultipartFile.fromPath('avatar', filePath,
+          contentType: MediaType('image', 'png')));
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        final res = await http.Response.fromStream(response);
+        print(res.body);
+
+        print('uploaded');
+        // response.stream.transform(utf8.decoder).listen((value) {
+        //   print(value);
+        return json.decode(res.body);
+        // });
+      } else {
+        print('upload error');
+        print(response.reasonPhrase);
+      }
+    } catch (err) {
+      print('ERROR in  postMultiPart upload image $err');
     }
   }
 

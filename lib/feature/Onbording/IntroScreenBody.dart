@@ -46,7 +46,7 @@ class _IntroScreenBodyState extends State<IntroScreenBody> {
           width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-            ( settingData!=null && settingData.length>0) ?  Container(
+            ( settingData!=null && settingData.length>0 &&  settingData[0].logo !=null ) ?  Container(
           height: 30.h,
           color: Colors.white,
           child: Center(child: CachedNetworkImage(

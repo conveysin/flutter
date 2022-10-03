@@ -81,11 +81,11 @@ class SignUpWithCredentialsClicked extends SignupEvent{
 
 
 class ResendClicked extends SignupEvent{
-  ResendClicked(this.mobile);
-  final String mobile;
+  ResendClicked(this.userId);
+   var userId;
 
   @override
-  List<Object> get props => [mobile];
+  List<Object> get props => [userId];
 }
 class getLanguages extends SignupEvent{
   getLanguages();

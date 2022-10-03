@@ -5,6 +5,8 @@ class SignupState extends Equatable {
   List<DistrictData> districtData;
   List<MandalData> mandalData;
   List<VillageData> villageData;
+  Data verifyOtpData;
+   SignupData? signupData;
   final bool? isOtpValid;
   final bool? isEmailValid;
   final bool? isSubmitting;
@@ -27,11 +29,15 @@ class SignupState extends Equatable {
   final bool isSignupLoading;
   final bool isSignupSuccess;
   final bool isSignupFailure;
+  final bool isOTPSuccess;
+  final bool isOTPFailure;
 
   bool get isFormValid => (isMobile);
 
   SignupState({
+    required this.verifyOtpData,
     required this.districtData,
+     this.signupData,
     required this.mandalData,
     required this.villageData,
     this.isLoading = false,
@@ -56,11 +62,15 @@ class SignupState extends Equatable {
     this.isSignupLoading=false,
     this.isSignupSuccess=false,
     this.isSignupFailure=false,
+  this.isOTPSuccess = false,
+   this.isOTPFailure= false,
   });
 
   factory SignupState.empty() {
     return SignupState(
+        verifyOtpData: new Data(),
         districtData: [],
+ //       signupData:,
         mandalData: [],
         villageData: [],
         isOtpValid: false,
@@ -80,13 +90,17 @@ class SignupState extends Equatable {
         villageID: '',
         isSignupLoading: false,
         isSignupFailure: false,
-        isSignupSuccess: false
+        isSignupSuccess: false,
+      isOTPSuccess : false,
+        isOTPFailure :false
     );
   }
 
   factory SignupState.loading(bool isPartial) {
     return SignupState(
+      verifyOtpData: new Data(),
         districtData: [],
+     // signupData: ,
         mandalData: [],
         villageData: [],
         isLoading: true,
@@ -101,8 +115,10 @@ class SignupState extends Equatable {
 
   factory SignupState.failure(String errorMessage, bool isPartial) {
     return SignupState(
+      verifyOtpData: new Data(),
       mandalData: [],
       districtData: [],
+     // signupData: [],
       villageData: [],
       isOtpValid: false,
       isEmailValid: false,
@@ -115,7 +131,9 @@ class SignupState extends Equatable {
 
   factory SignupState.socialLoginFailure(String errorMessage) {
     return SignupState(
+      verifyOtpData: new Data(),
       districtData: [],
+     // signupData: [],
       mandalData: [],
       villageData: [],
       isOtpValid: false,
@@ -127,7 +145,9 @@ class SignupState extends Equatable {
 
   factory SignupState.success(bool? isUserExist) {
     return SignupState(
+      verifyOtpData: new Data(),
         districtData: [],
+     // signupData: [],
         mandalData: [],
         villageData: [],
         isOtpValid: true,
@@ -159,8 +179,10 @@ class SignupState extends Equatable {
 
   SignupState copyWith({
     List<DistrictData>? disctrictData,
+    SignupData? signupData,
     List<MandalData>? mandalData,
     List<VillageData>? villageData,
+    Data? verifyOtpData,
     bool? isOtpValid,
     bool? isEmailValid,
     bool? isSubmitting,
@@ -178,10 +200,15 @@ class SignupState extends Equatable {
     bool? isSignupLoading,
     bool? isSignupFailure,
     bool? isSignupSuccess,
+    bool? isOTPSuccess,
+    bool? isOTPFailure,
     String? errormessage,
   }) {
     return SignupState(
+
+      verifyOtpData: verifyOtpData ?? this.verifyOtpData,
       districtData: disctrictData ?? this.districtData,
+      signupData: signupData ?? this.signupData,
       mandalData: mandalData ?? this.mandalData,
       villageData: villageData ?? this.villageData,
       isSubmitting: isSubmitting ?? this.isSubmitting,
@@ -201,6 +228,8 @@ class SignupState extends Equatable {
       isSignupLoading: isSignupLoading ?? this.isSignupLoading,
       isSignupSuccess: isSignupSuccess ?? this.isSignupSuccess,
       isSignupFailure: isSignupFailure ?? this.isSignupFailure,
+      isOTPFailure: isOTPFailure ?? this.isOTPFailure,
+      isOTPSuccess: isOTPSuccess ?? this.isOTPSuccess,
       errormessage: errormessage ?? this.errormessage,
     );
   }
@@ -214,13 +243,17 @@ class SignupState extends Equatable {
       isSignupLoading :$isSignupLoading
 isSignupFailure:$isSignupFailure
 isSignupSuccess:$isSignupSuccess
+isOTPSuccess:$isOTPSuccess
+isOTPFailure:$isOTPFailure
      
     }''';
   }
 
   @override
   List<Object> get props => [
+    verifyOtpData,
         districtData,
+       // signupData,
         mandalData,
         villageData,
         isOtpValid!,
@@ -239,6 +272,8 @@ isSignupSuccess:$isSignupSuccess
     isSignupLoading,
     isSignupFailure,
     isSignupSuccess,
+    isOTPFailure,
+    isOTPSuccess,
     errormessage
       ];
 

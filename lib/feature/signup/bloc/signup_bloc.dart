@@ -7,6 +7,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:getinforme/Model/DistrictModel.dart';
 import 'package:getinforme/Model/MandalModel.dart';
+import 'package:getinforme/Model/SignupModel.dart';
+import 'package:getinforme/Model/VerifyUserOtp.dart';
 import 'package:getinforme/Model/VillageModel.dart';
 
 
@@ -81,7 +83,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
     if (event is ResendClicked) {
 
-      yield* _resendOtp(event);
+      //yield* _resendOtp(event);
 
     } else
       UnimplementedError();
@@ -99,19 +101,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   }
 
 
-  Stream<SignupState> _resendOtp(ResendClicked event) async* {
-    print('otp');
-    final response = await _dataHelper.apiHelper.executeLogin(
-        event.mobile,'');
-    yield* response.fold((l) async* {
-      yield SignupState.failure(l.errorMessage,false);
-    },  (r) async* {
-    //  await _dataHelper.cacheHelper.saveAccessToken(r.data.otp.toString());
-
-      yield SignupState.empty();
-    });
-    // });
-  }
 
 
 
@@ -147,20 +136,51 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     });
   }
 
-  Future<void> signup(String name,String mobile, String password,String confirmpassword,var districtID,var mandalID,var villageID) async {
+  Future<void> signup(String name,String mobile, String password,String confirmpassword,var districtID,var mandalID,var villageID,String device_id) async {
     emit(state.copyWith(isSubmitting: true));
-    final dailyQuoteResponse = await _dataHelper.apiHelper.executeSignup(name,mobile,password,confirmpassword,districtID,mandalID,villageID);
+    final dailyQuoteResponse = await _dataHelper.apiHelper.executeSignup(name,mobile,password,confirmpassword,districtID,mandalID,villageID,device_id);
     dailyQuoteResponse.fold((l) {
       print("LL_BLOCK>>"+l.errorMessage);
       print("LL_BLOCK>>"+l.errorCode.toString());
       emit(state.copyWith(isSubmitting: false,isSignupFailure: true,errormessage: l.errorMessage.toString()));
       emit(state.copyWith(isSubmitting: false,isSignupFailure: false,errormessage: null));
     }, (r) async {
-      emit(state.copyWith(isSubmitting: false,errormessage: r.msg!,isSignupSuccess: true,));
+      await _dataHelper.cacheHelper.setLogin('1');
+      await _dataHelper.cacheHelper.saveUserInfo(r.data!.userId.toString());
+      emit(state.copyWith(isSubmitting: false,errormessage: r.msg!,isSignupSuccess: true,signupData: r.data));
     });
   }
 
+  Future<void> resendOtp(String userId) async {
+    emit(state.copyWith(isSubmitting: true));
+    final dailyQuoteResponse = await _dataHelper.apiHelper.resendOtp(userId);
+    dailyQuoteResponse.fold((l) {
+      print("LL_BLOCK>>"+l.errorMessage);
+      print("LL_BLOCK>>"+l.errorCode.toString());
+      emit(state.copyWith(isSubmitting: false,isOTPFailure: true,errormessage: l.errorMessage.toString()));
+      emit(state.copyWith(isSubmitting: false,isOTPFailure: false,errormessage: null));
+    }, (r) async {
+      emit(state.copyWith(isSubmitting: false,errormessage: r.msg!));
+    });
+  }
 
+  Future<void> verifyOtp(String userId,String otp) async {
+    emit(state.copyWith(isSubmitting: true));
+    final dailyQuoteResponse = await _dataHelper.apiHelper.verifyOtp(userId,otp);
+    dailyQuoteResponse.fold((l) {
+      print("LL_BLOCK>>"+l.errorMessage);
+      print("LL_BLOCK>>"+l.errorCode.toString());
+      emit(state.copyWith(isSubmitting: false,isOTPFailure: true,errormessage: l.errorMessage.toString()));
+       emit(state.copyWith(isSubmitting: false,isOTPFailure: false,errormessage: null));
+    }, (r) async {
+      if(r.data!=null && r.data!.villageId!=null) {
+        print('VillageID>>>>${r.data!.villageId}');
+        await _dataHelper.cacheHelper.saveVillage(r.data!.villageId!);
+        await _dataHelper.cacheHelper.setUserType(r.data!.userType.toString());
+      }
+      emit(state.copyWith(isSubmitting: false,errormessage: r.msg!,isOTPSuccess: true,verifyOtpData: r.data));
+    });
+  }
 
 }
 

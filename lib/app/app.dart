@@ -3,6 +3,7 @@
 import 'dart:io';
 
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'package:getinforme/core/routes.dart' as _router;
@@ -10,6 +11,8 @@ import '../Thems/Responsive.dart';
 import '../Thems/app_theme.dart';
 import '../core/routes.dart';
 
+import '../data/data_helper.dart';
+import '../utility/service/flutter_local_notification.dart';
 import '../utility/strings.dart';
 import 'bloc/app_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,8 +26,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
- // FirebaseMessaging messaging =  FirebaseMessaging.instance;
-
+  FirebaseMessaging messaging =  FirebaseMessaging.instance;
+  final DataHelper _dataHelper = DataHelperImpl.instance;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -39,14 +42,12 @@ class _AppState extends State<App> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   /* FlutterLocalNotification.initialize(context);
+    FlutterLocalNotification.initialize(context);
     messaging = FirebaseMessaging.instance;
     messaging.getToken().then((value) async {
-      print(value);
-      //   final prefs = await SharedPreferences.getInstance();
-      //    prefs.setString(SharedPref.PrefrenceKey.FCM_TOKEN, value);
+      print("Token>>"+value.toString());
+       _dataHelper.cacheHelper.saveAccessToken(value.toString());
     });
-
     if (Platform.isAndroid) {
       // dynamic iosSubscription = messaging.onIosSettingsRegistered.listen((data) {});
       messaging.requestPermission(
@@ -58,7 +59,37 @@ class _AppState extends State<App> {
         provisional: false,
         sound: true,
       );
-    }*/
+    }
+    _messageHandler();
+  }
+  void _messageHandler(){
+
+    //App is in Terminated state
+    FirebaseMessaging.instance.getInitialMessage().then((message){
+      if(message!.data!=null) {
+        print(message.data);
+        FlutterLocalNotification.display(message);
+      }
+    });
+
+
+// App is in foreground state
+    FirebaseMessaging.onMessage.listen((message) {
+      print("onMessage");
+      if(message.data!=null) {
+        print(message.data);
+        FlutterLocalNotification.display(message);
+      }
+    });
+
+    //When App is in background state but not Terminated
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if(message!.data!=null) {
+        print(message.data);
+        FlutterLocalNotification.display(message);
+      }
+    });
+
   }
 }
 

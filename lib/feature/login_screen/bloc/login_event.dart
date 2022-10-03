@@ -60,12 +60,13 @@ class PasswordVisiblilityChanged extends LoginEvent {
 }
 
 class LoginWithCredentialsClicked extends LoginEvent {
-  LoginWithCredentialsClicked(this.mobile,this.password);
+  LoginWithCredentialsClicked(this.mobile,this.password,this.device_id);
   final String mobile;
   final String password;
+  final String device_id;
 
   @override
-  List<Object> get props => [mobile,password];
+  List<Object> get props => [mobile,password,device_id];
 }
 
 class ResendClicked extends LoginEvent {
