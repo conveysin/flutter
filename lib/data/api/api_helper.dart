@@ -71,8 +71,8 @@ abstract class ApiHelper {
   Future<Either<CustomException, SignupModel>> executeSignup(
       String name,
       String mobile,
-      String password,
-      String confirmPassword,
+      // String password,
+      // String confirmPassword,
       var district,
       var mandal,
       var village, String device_id);
@@ -201,8 +201,8 @@ class ApiHelperImpl extends ApiHelper {
   Future<Either<CustomException, SignupModel>> executeSignup(
       String nameTxt,
       String mobileTxt,
-      String passwordTxt,
-      String confirmPasswordTxt,
+      // String passwordTxt,
+      // String confirmPasswordTxt,
       var districtTxt,
       var mandalTxt,
       var villageTxt,String device_id) async {
@@ -210,8 +210,8 @@ class ApiHelperImpl extends ApiHelper {
       var map = new Map<String, dynamic>();
       map['name'] = nameTxt;
       map['mobile'] = mobileTxt;
-      map['password'] = passwordTxt;
-      map['confirm_password'] = confirmPasswordTxt;
+      // map['password'] = passwordTxt;
+      // map['confirm_password'] = confirmPasswordTxt;
       map['district'] = districtTxt;
       map['mandal'] = mandalTxt;
       map['village'] = villageTxt;

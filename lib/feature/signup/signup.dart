@@ -42,6 +42,7 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
 
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String token = '';
+  // String Mobile = '';
 
   @override
   void onInit() {
@@ -138,42 +139,43 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
                             isValid: state.isName,
                             usernameType: UsernameType.name,
                             hinttext: CommonButtons.Name,
+                            // hinttext: widget.arguments?.get('mobile'),
                             keyboardtype: TextInputType.text,
                             onChange: () {},
                           ),
                           SizedBox(
                             height: 20,
                           ),
-                          UsernameEditText(
-                            _mobileController,
-                            isValid: state.isMobile,
-                            usernameType: UsernameType.mobile,
-                            hinttext: CommonButtons.MOBILE_NUMBER,
-                            keyboardtype: TextInputType.number,
-                            onChange: () {},
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          UsernameEditText(
-                            _passwordController,
-                            isValid: state.isPassword,
-                            usernameType: UsernameType.passwoord,
-                            hinttext: StringConst.sentence.Password,
-                            keyboardtype: TextInputType.visiblePassword,
-                            onChange: () {},
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          UsernameEditText(
-                            _confirmpasswordController,
-                            isValid: state.isPassword,
-                            usernameType: UsernameType.passwoord,
-                            hinttext: StringConst.sentence.ConfirmPassword,
-                            keyboardtype: TextInputType.visiblePassword,
-                            onChange: () {},
-                          ),
+                          // UsernameEditText(
+                          //   _mobileController,
+                          //   isValid: state.isMobile,
+                          //   usernameType: UsernameType.mobile,
+                          //   hinttext: CommonButtons.MOBILE_NUMBER,
+                          //   keyboardtype: TextInputType.number,
+                          //   onChange: () {},
+                          // ),
+                          // SizedBox(
+                          //   height: 20,
+                          // ),
+                          // UsernameEditText(
+                          //   _passwordController,
+                          //   isValid: state.isPassword,
+                          //   usernameType: UsernameType.passwoord,
+                          //   hinttext: StringConst.sentence.Password,
+                          //   keyboardtype: TextInputType.visiblePassword,
+                          //   onChange: () {},
+                          // ),
+                          // SizedBox(
+                          //   height: 20,
+                          // ),
+                          // UsernameEditText(
+                          //   _confirmpasswordController,
+                          //   isValid: state.isPassword,
+                          //   usernameType: UsernameType.passwoord,
+                          //   hinttext: StringConst.sentence.ConfirmPassword,
+                          //   keyboardtype: TextInputType.visiblePassword,
+                          //   onChange: () {},
+                          // ),
                           SizedBox(
                             height: 20,
                           ),
@@ -351,24 +353,25 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
                               isLoading: state.isSubmitting!,
                               textSize: 14,
                               onPressed: () async {
-                                (_mobileController.text != null &&
-                                        _mobileController.text.isNotEmpty &&
-                                        _nameController.text != null &&
+                                // (_mobileController.text != null &&
+                                //         _mobileController.text.isNotEmpty &&
+                                        (_nameController.text != null &&
                                         _nameController.text.isNotEmpty &&
-                                        _passwordController.text != null &&
-                                        _passwordController.text.isNotEmpty &&
-                                        _confirmpasswordController.text !=
-                                            null &&
-                                        _confirmpasswordController
-                                            .text.isNotEmpty &&
+                                //         _passwordController.text != null &&
+                                //         _passwordController.text.isNotEmpty &&
+                                //         _confirmpasswordController.text !=
+                                //             null &&
+                                //         _confirmpasswordController
+                                //             .text.isNotEmpty &&
                                         state.districtID.isNotEmpty &&
                                         state.mandalID.isNotEmpty &&
                                         state.villageID.isNotEmpty)
                                     ? _signupBloc.signup(
                                         _nameController.text,
-                                        _mobileController.text,
-                                        _passwordController.text,
-                                        _confirmpasswordController.text,
+                                        // _mobileController.text,
+                                        widget.arguments?.get('mobile'),
+                                        // _passwordController.text,
+                                        // _confirmpasswordController.text,
                                         state.districtID,
                                         state.mandalID,
                                         state.villageID,

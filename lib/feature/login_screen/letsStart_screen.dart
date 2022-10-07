@@ -44,6 +44,7 @@ class _LetsStartScreenState extends AppScreenState<LoginScreen> {
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String logoURl = '';
   String token = '';
+  String mobile = '';
 
   @override
   void onInit() {
@@ -82,7 +83,7 @@ class _LetsStartScreenState extends AppScreenState<LoginScreen> {
   void _onLoginPressed() {
     print("token>>"+token);
     _loginBloc.add(
-      LoginWithCredentialsClicked(_mobileController.text,_passwordController.text,token),
+      LoginWithCredentialsClicked(widget.arguments?.get('mobile'),_passwordController.text,token),
     );
   }
 
@@ -181,35 +182,36 @@ class _LetsStartScreenState extends AppScreenState<LoginScreen> {
                                     color: AppColors.letsStartTextColor),
                               ),
 
-                              Text(
-                              StringConst.sentence.Enter_your_username_password,
-                                style: textTheme.subtitle1?.copyWith(
-                                  fontSize: 14,
-                                    color: AppColors.letsStartTextColor),
-                              ),
+                              // Text(
+                              // StringConst.sentence.Enter_your_username_password,
+                              //   style: textTheme.subtitle1?.copyWith(
+                              //     fontSize: 14,
+                              //       color: AppColors.letsStartTextColor),
+                              // ),
 
-                              SizedBox(
-                                height: 29,
-                              ),
+                              // SizedBox(
+                              //   height: 29,
+                              // ),
 
-                              UsernameEditText(
-                                _mobileController,
-                                isValid:  state.isMobile,
-                                usernameType: UsernameType.mobile,
-                                hinttext: StringConst.label.mobile_no,
-                                keyboardtype: TextInputType.number,
-                                onChange: (){},
-                              ),
-                              SizedBox(
-                                height: 19,
-                              ),
+                              // UsernameEditText(
+                              //   _mobileController,
+                              //   isValid:  state.isMobile,
+                              //   usernameType: UsernameType.mobile,
+                              //   hinttext: StringConst.label.mobile_no,
+                              //   keyboardtype: TextInputType.number,
+                              //   onChange: (){},
+                              // ),
+                              // SizedBox(
+                              //   height: 19,
+                              // ),
 
                               UsernameEditText(
                                 _passwordController,
-                                textObsecure: true,
+                                // textObsecure: true,
                                 isValid: state.isPassword,
                                 usernameType: UsernameType.passwoord,
                                 hinttext: StringConst.sentence.Password,
+                                // hinttext: widget.arguments?.get('mobile'),
                                 keyboardtype: TextInputType.visiblePassword,
                                 onChange: (){},
                               ),
@@ -243,34 +245,35 @@ class _LetsStartScreenState extends AppScreenState<LoginScreen> {
                                   isLoading:  state.isSubmitting!?true:false,
                                   textSize: 14,
                                   onPressed: () {
-                                    (state.isMobile && state.isPassword)?
+                                    (state.isPassword)?
                                     _onLoginPressed():
                                     ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
-                                        SnackBar(content: Text('Please enter valid mobile number and password')));
+                                        // SnackBar(content: Text('Please enter valid mobile number and password')));
+                                        SnackBar(content: Text('Please enter the correct OTP sent to your mobile')));
                                   }, backgroundColor: Colors.blue),
 
 
-                              SizedBox(
-                                  width:100.w,
-                                  child: InkWell(
-                                    onTap: () {
-                                      navigateToScreen(Screen.Signup);
-                                    },
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 10.0),
-                                        child: Text(StringConst.label.dont_account,
-                                            textAlign: TextAlign.end,
-                                            style:
-                                            textTheme.subtitle1?.copyWith(
-                                              color: AppColors.black,
-                                              fontSize: 14,
-                                              decoration:
-                                              TextDecoration.underline,
-                                            )),
-                                      ),
-                                    ),
-                                  )),
+                              // SizedBox(
+                              //     width:100.w,
+                              //     child: InkWell(
+                              //       onTap: () {
+                              //         navigateToScreen(Screen.Signup);
+                              //       },
+                              //       child: Center(
+                              //         child: Padding(
+                              //           padding: const EdgeInsets.only(top: 10.0),
+                              //           child: Text(StringConst.label.dont_account,
+                              //               textAlign: TextAlign.end,
+                              //               style:
+                              //               textTheme.subtitle1?.copyWith(
+                              //                 color: AppColors.black,
+                              //                 fontSize: 14,
+                              //                 decoration:
+                              //                 TextDecoration.underline,
+                              //               )),
+                              //         ),
+                              //       ),
+                              //     )),
 
 
                             ],

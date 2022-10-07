@@ -77,36 +77,36 @@ navigateToScreen(Screen.Contactus);
                                   color: AppColors.black),
                             )
                         ),
-                        SizedBox(height: 20,),
-                        new Container (
-                            decoration: new BoxDecoration (
-                                color: Colors.white
-                            ),
-                            child: ListTile(
-                              onTap: () {
-                                onLogout();
-                              },
-                              leading: Text('Logout', style: textTheme
-                                  .headline6,),
-                              trailing: Icon(Icons.arrow_forward_ios_rounded,
-                                color: AppColors.black,),
-                            )
-                        ),
-                        SizedBox(height: 20,),
-                        Container (
-                            decoration: new BoxDecoration (
-                                color: Colors.white
-                            ),
-                            child: ListTile(
-                              onTap: () {
-                                navigateToScreen(Screen.ChangePassword);
-                              },
-                              leading: Text('Change Password', style: textTheme
-                                  .headline6,),
-                              trailing: Icon(Icons.arrow_forward_ios_rounded,
-                                color: AppColors.black,),
-                            )
-                        ),
+                        // SizedBox(height: 20,),
+                        // new Container (
+                        //     decoration: new BoxDecoration (
+                        //         color: Colors.white
+                        //     ),
+                        //     child: ListTile(
+                        //       onTap: () {
+                        //         onLogout();
+                        //       },
+                        //       leading: Text('Logout', style: textTheme
+                        //           .headline6,),
+                        //       trailing: Icon(Icons.arrow_forward_ios_rounded,
+                        //         color: AppColors.black,),
+                        //     )
+                        // ),
+                        // SizedBox(height: 20,),
+                        // Container (
+                        //     decoration: new BoxDecoration (
+                        //         color: Colors.white
+                        //     ),
+                        //     child: ListTile(
+                        //       onTap: () {
+                        //         navigateToScreen(Screen.ChangePassword);
+                        //       },
+                        //       leading: Text('Change Password', style: textTheme
+                        //           .headline6,),
+                        //       trailing: Icon(Icons.arrow_forward_ios_rounded,
+                        //         color: AppColors.black,),
+                        //     )
+                        // ),
                         SizedBox(height: 20,),
                         ( isEditor == true) ?   new Container (
                             decoration: new BoxDecoration (

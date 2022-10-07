@@ -18,6 +18,7 @@ import '../../utility/strings.dart';
 import '../../widgets/AppLoader.dart';
 import '../../widgets/app_edit_text.dart';
 import '../Onbording/enter_otp.dart';
+import '../login_screen/letsStart_screen.dart';
 import 'bloc/forgotPassword_bloc.dart';
 import 'bloc/forgotPassword_event.dart';
 
@@ -79,15 +80,14 @@ class _ForgotPasswordState extends AppScreenState<ForgotPassword> {
           listener: (context, state) {
             if (state.isSuccess!) {
               final bundle = Bundle()..put('mobile', _mobileController.text);
-            //  _navigateToNextScreen(context);
               navigateToScreenAndReplace(Screen.Login, bundle);
-             // navigateToScreenAndReplace(Screen.Home, bundle);
-             // navigateToScreenAndReplace(Screen.HomeNevigation);
             }
             if (state.isFailure!) {
               if(state.errorMessage != null)
               ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
                   SnackBar(content: Text('${state.errorMessage}')));
+              final bundle = Bundle()..put('mobile', _mobileController.text);
+              navigateToScreenAndReplace(Screen.Signup, bundle);
             }
           },
           builder: (context, state) {
@@ -184,6 +184,14 @@ class _ForgotPasswordState extends AppScreenState<ForgotPassword> {
                                     _onLoginPressed():
                                     ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
                                         SnackBar(content: Text('Please enter valid mobile number')));
+
+                                    Bundle bundle = new Bundle()
+                                      ..put('MobileNumber', _mobileController.text);
+                                    Navigator.pushNamed(
+                                      context,
+                                      Screen.PostPage.toString(),
+                                      arguments: bundle,
+                                    );
                                   }, backgroundColor: Colors.blue),
                             ],
                           ),
@@ -196,9 +204,9 @@ class _ForgotPasswordState extends AppScreenState<ForgotPassword> {
         ),
       ),
     );
-  }
+  }  
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => VerifyPhoneNumberScreen(phoneNumber: '9981271241',)));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => VerifyPhoneNumberScreen(phoneNumber: _mobileController.text,)));
   }
 
 

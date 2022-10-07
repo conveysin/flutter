@@ -79,7 +79,7 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
               navigateToScreen(Screen.HomeNevigation);
             }
           } else {
-            navigateToScreen(Screen.Login);
+            navigateToScreen(Screen.ForgetPassword);
           }
         }
       });
@@ -99,7 +99,7 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
                       navigateToScreen(Screen.HomeNevigation);
                     }
                   } else {
-                    navigateToScreen(Screen.Login);
+                    navigateToScreen(Screen.ForgetPassword);
                   }
                 });
               },

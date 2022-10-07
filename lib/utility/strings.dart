@@ -75,7 +75,7 @@ class SENTENCE {
   String get Enter_your_username_password =>'Enter your mobile number and password';
   String get Enter_your_mobile_number =>'Enter your mobile number';
   String get Username =>'Username';
-  String get Password =>'Password';
+  String get Password =>'OTP';
   String get Old_Password =>'Old Password';
   String get ConfirmPassword => "Confirm Password";
 }
