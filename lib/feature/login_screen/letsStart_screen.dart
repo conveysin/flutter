@@ -14,6 +14,8 @@ import 'package:getinforme/utility/colors.dart';
 import 'package:getinforme/utility/images.dart';
 import 'package:getinforme/widgets/primary_button.dart';
 
+import 'package:otp_text_field/otp_field.dart';
+import 'package:otp_text_field/style.dart';
 
 import '../../Thems/color_palette.dart';
 import '../../core/routes.dart';
@@ -39,6 +41,7 @@ class LoginScreen extends AppScreen {
 class _LetsStartScreenState extends AppScreenState<LoginScreen> {
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  OtpFieldController otpController = OtpFieldController();
   late LoginBloc _loginBloc;
   String device_id='';
   final DataHelper _dataHelper = DataHelperImpl.instance;
@@ -182,42 +185,53 @@ class _LetsStartScreenState extends AppScreenState<LoginScreen> {
                                     color: AppColors.letsStartTextColor),
                               ),
 
-                              // Text(
-                              // StringConst.sentence.Enter_your_username_password,
-                              //   style: textTheme.subtitle1?.copyWith(
-                              //     fontSize: 14,
-                              //       color: AppColors.letsStartTextColor),
-                              // ),
-
-                              // SizedBox(
-                              //   height: 29,
-                              // ),
-
-                              // UsernameEditText(
-                              //   _mobileController,
-                              //   isValid:  state.isMobile,
-                              //   usernameType: UsernameType.mobile,
-                              //   hinttext: StringConst.label.mobile_no,
-                              //   keyboardtype: TextInputType.number,
-                              //   onChange: (){},
-                              // ),
-                              // SizedBox(
-                              //   height: 19,
-                              // ),
-
-                              UsernameEditText(
-                                _passwordController,
-                                // textObsecure: true,
-                                isValid: state.isPassword,
-                                usernameType: UsernameType.passwoord,
-                                hinttext: StringConst.sentence.Password,
-                                // hinttext: widget.arguments?.get('mobile'),
-                                keyboardtype: TextInputType.visiblePassword,
-                                onChange: (){},
+                              Text(
+                              "Sent to +91 ${widget.arguments?.get('mobile')}",
+                                style: textTheme.subtitle1?.copyWith(
+                                  fontSize: 14,
+                                    color: AppColors.letsStartTextColor),
                               ),
+
+
                               SizedBox(
                                 height: 5,
                               ),
+                              OTPTextField(
+                                controller: otpController,
+                                length: 4,
+                                // isValid: state.isPassword,
+                                width: MediaQuery.of(context).size.width,
+                                fieldWidth: 60,
+                                style: TextStyle(
+                                  fontSize: 15
+                                ),
+                                textFieldAlignment: MainAxisAlignment.spaceAround,
+                                fieldStyle: FieldStyle.underline,
+                                onCompleted: (pin) {
+                                  // print("Completed: " + pin);
+                                  _passwordController.text = pin;
+                                },
+                              ),
+                              SizedBox(
+                                height: 25,
+                              ),
+
+                              PrimaryButton(
+                                  title: CommonButtons.SUBMIT,
+                                  isLoading:  state.isSubmitting!?true:false,
+                                  textSize: 14,
+                                  onPressed: () {
+                                    (state.isPassword)?
+                                    _onLoginPressed():
+                                    ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
+                                        // SnackBar(content: Text('Please enter valid mobile number and password')));
+                                        SnackBar(content: Text('Please enter the correct OTP sent to your mobile')));
+                                  }, backgroundColor: Colors.blue),
+
+                              SizedBox(
+                                height: 10,
+                              ),
+
                               SizedBox(
                                   width:100.w,
                                   child: InkWell(
@@ -239,43 +253,7 @@ class _LetsStartScreenState extends AppScreenState<LoginScreen> {
                                             )),
                                       ),
                                     ),
-                                  )),
-                              PrimaryButton(
-                                  title: CommonButtons.LOGIN,
-                                  isLoading:  state.isSubmitting!?true:false,
-                                  textSize: 14,
-                                  onPressed: () {
-                                    (state.isPassword)?
-                                    _onLoginPressed():
-                                    ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
-                                        // SnackBar(content: Text('Please enter valid mobile number and password')));
-                                        SnackBar(content: Text('Please enter the correct OTP sent to your mobile')));
-                                  }, backgroundColor: Colors.blue),
-
-
-                              // SizedBox(
-                              //     width:100.w,
-                              //     child: InkWell(
-                              //       onTap: () {
-                              //         navigateToScreen(Screen.Signup);
-                              //       },
-                              //       child: Center(
-                              //         child: Padding(
-                              //           padding: const EdgeInsets.only(top: 10.0),
-                              //           child: Text(StringConst.label.dont_account,
-                              //               textAlign: TextAlign.end,
-                              //               style:
-                              //               textTheme.subtitle1?.copyWith(
-                              //                 color: AppColors.black,
-                              //                 fontSize: 14,
-                              //                 decoration:
-                              //                 TextDecoration.underline,
-                              //               )),
-                              //         ),
-                              //       ),
-                              //     )),
-
-
+                              )),
                             ],
                           ),
                         ))

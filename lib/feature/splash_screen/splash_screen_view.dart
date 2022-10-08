@@ -29,7 +29,7 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
   late final Duration _splashEndDuration;
   bool isSkip = false;
   final DataHelper _dataHelper = DataHelperImpl.instance;
-  String result = '', userType = '';
+  String result = '', userType = '', villageID = '';
   String userID = '0';
 
 
@@ -40,6 +40,7 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
 
     result = await _dataHelper.cacheHelper.isLogin();
     userType = await _dataHelper.cacheHelper.isUserType();
+    villageID = await _dataHelper.cacheHelper.getVillage();
     _getUserId();
 
     await FirebaseAuth.instance.signOut();
@@ -74,9 +75,17 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
         if (!isSkip) {
           if (result == "1") {
             if (userType.toLowerCase() == '2') {
-              navigateToScreen(Screen.HomeNevigation);
+              if (villageID == ''){
+                navigateToScreen(Screen.ForgetPassword);  
+              } else {
+                navigateToScreen(Screen.HomeNevigation);
+              }
             } else {
-              navigateToScreen(Screen.HomeNevigation);
+              if (villageID == ''){
+                navigateToScreen(Screen.ForgetPassword);  
+              } else {
+                navigateToScreen(Screen.HomeNevigation);
+              }
             }
           } else {
             navigateToScreen(Screen.ForgetPassword);
@@ -94,9 +103,17 @@ class _SplashScreenState extends AppScreenState<SplashScreen>
                   isSkip = true;
                   if (result == "1") {
                     if (userType.toLowerCase() == '2') {
-                      navigateToScreen(Screen.HomeNevigation);
+                      if (villageID == ''){
+                        navigateToScreen(Screen.ForgetPassword);  
+                      } else {
+                        navigateToScreen(Screen.HomeNevigation);
+                      }
                     } else {
-                      navigateToScreen(Screen.HomeNevigation);
+                      if (villageID == ''){
+                        navigateToScreen(Screen.ForgetPassword);  
+                      } else {
+                        navigateToScreen(Screen.HomeNevigation);
+                      }
                     }
                   } else {
                     navigateToScreen(Screen.ForgetPassword);

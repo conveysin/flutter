@@ -76,7 +76,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               children: [
                 Text(
-                  "We've sent an SMS with a verification code to $phoneNumber",
+                  "We've sent an SMS with a verification code to your mobile number",
                   style: const TextStyle(
                     fontSize: 25,
                   ),
@@ -124,7 +124,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                       if (!isValidOTP) {
                         _showSnackBar(
                           context,
-                          "Please enter the correct OTP sent to $phoneNumber",
+                          "Please enter the correct OTP sent to your mobile number",
                         );
                       }
                     }

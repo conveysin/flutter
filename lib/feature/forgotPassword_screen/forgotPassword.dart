@@ -144,7 +144,7 @@ class _ForgotPasswordState extends AppScreenState<ForgotPassword> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Forgot Password?",
+                                "",
                                 style: textTheme.headline6?.copyWith(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
@@ -152,16 +152,10 @@ class _ForgotPasswordState extends AppScreenState<ForgotPassword> {
                                     color: AppColors.letsStartTextColor),
                               ),
 
-                              Text(
-                              "Please enter your mobile number. You will be receive new password on your registered mobile number.",
-                                style: textTheme.subtitle1?.copyWith(
-                                  fontSize: 14,
-                                    color: AppColors.letsStartTextColor),
-                              ),
-
-                              SizedBox(
-                                height: 29,
-                              ),
+                              
+                              // SizedBox(
+                              //   height: 20,
+                              // ),
 
                               UsernameEditText(
                                 _mobileController,
@@ -172,7 +166,7 @@ class _ForgotPasswordState extends AppScreenState<ForgotPassword> {
                                 onChange: (){},
                               ),
                               SizedBox(
-                                height: 59,
+                                height: 25,
                               ),
 
                               PrimaryButton(
