@@ -166,7 +166,7 @@ class CommonButtons {
   static const String CANCEL = "Cancel";
   static const String FINISH = "Finish";
   // welcome
-  static const String LOGIN = "Eenter OTP";
+  static const String LOGIN = "Enter OTP";
   static const String SIGNUP = "Sign up";
   //user type
   static const String USER = "User";
