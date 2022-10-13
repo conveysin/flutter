@@ -7,6 +7,9 @@ import 'package:getinforme/feature/post/cubit/post_cubit.dart';
 import 'package:getinforme/feature/post/post_page.dart';
 import 'package:getinforme/feature/profile/cubit/profile_cubit.dart';
 import 'package:getinforme/feature/profile/profile_page_screen.dart';
+// import 'package:getinforme/feature/catogery/cubit/catogery_cubit.dart';
+// import 'package:getinforme/feature/catogery/catogery_screen.dart';
+
 
 import '../../core/app_screen.dart';
 import '../../core/bundle.dart';
@@ -15,8 +18,12 @@ import '../../utility/colors.dart';
 import '../../utility/sizes.dart';
 import '../../utility/strings.dart';
 
+import '../category/cubit/category_cubit.dart';
 import '../home/cubit/home_cubit.dart';
 import '../home/home_page_screen.dart';
+// import '../category/category_page_screen.dart';
+import '../category/cubit/category_cubit.dart';
+import '../category/category_screen.dart';
 import '../login_screen/bloc/login_bloc.dart';
 import '../login_screen/letsStart_screen.dart';
 import '../logout/logout.dart';
@@ -39,6 +46,7 @@ class _HomeNavigationScreenState
   late HomeCubit _homeCubit;
   late LogoutCubit _logoutCubit;
   late ProfileCubit _profileCubit;
+  late CategoryCubit _categoryCubit;
   final DataHelper _dataHelper = DataHelperImpl.instance;
 
   int current_index = 0;
@@ -49,6 +57,7 @@ class _HomeNavigationScreenState
     _cubit = BlocProvider.of<NewHomeNavigationCubit>(context);
     _homeCubit = BlocProvider.of<HomeCubit>(context);
     _profileCubit = BlocProvider.of<ProfileCubit>(context);
+    _categoryCubit = BlocProvider.of<CategoryCubit>(context);
     _logoutCubit = BlocProvider.of<LogoutCubit>(context);
     /*_selectCategoryCubit = BlocProvider.of<SelectCategoryCubit>(context);
 
@@ -66,6 +75,11 @@ class _HomeNavigationScreenState
         activeIcon: _getBottomBarIcons('assets/icons/profile.svg', true),
       ),
       BottomNavigationBarItem(
+        label: "PhoneBook",
+        icon: _getBottomBarIcons('assets/icons/phonebook.svg', false),
+        activeIcon: _getBottomBarIcons('assets/icons/phonebook.svg', true),
+      ),
+      BottomNavigationBarItem(
         label: StringConst.label.menu,
         icon: _getBottomBarIcons('assets/icons/settings.svg', false),
         activeIcon: _getBottomBarIcons('assets/icons/settings.svg', true),
@@ -79,6 +93,10 @@ class _HomeNavigationScreenState
       BlocProvider.value(
         value: _profileCubit,
         child: ProfilePage(),
+      ),
+      BlocProvider.value(
+        value: _categoryCubit,
+        child: CategoryPage(),
       ),
       BlocProvider.value(
         value: _logoutCubit,

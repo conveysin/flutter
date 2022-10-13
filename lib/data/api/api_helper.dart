@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:getinforme/Model/PostModel.dart';
 import 'package:getinforme/Model/ProfileModel.dart';
+import 'package:getinforme/Model/CategoryModel.dart';
 import 'package:getinforme/Model/SettingModel.dart';
 import 'package:getinforme/Model/VerifyOtpModel.dart';
 import 'package:getinforme/Model/VillageModel.dart';
@@ -53,6 +54,8 @@ class ApiEndPoints {
   static final String forget_password = 'forget_password';
   static final String departmentList = 'department';
   static final String user_profile = 'user_profile';
+  static final String category_list = 'categories';
+  static final String sample_text = 'sample_text';
   static final String post = 'posts';
   static final String contact_us = 'contact_us';
   static final String edit_profile = 'edit_profile';
@@ -95,6 +98,8 @@ abstract class ApiHelper {
   Future<Either<CustomException, DepartmentModel>> executeHome(String villageId, String userID);
   Future<Either<CustomException, DepartmentModel>> postDeparrtment(String userID,String villagrID);
   Future<Either<CustomException, ProfileModel>> getProfileInfo(String userId);
+  Future<Either<CustomException, CategoryModel>> getCategoryInfo(String letter);
+  Future<Either<CustomException, CategoryModel>> getSampleText();
   Future<Either<CustomException, PostModel>> getPostList(String departmentId, String villageID,String userID);
   Future<Either<CustomException, VerifyOtpModel>> contact_us(String contact_us, String user_id);
   Future<Either<CustomException, VerifyOtpModel>> like_posts(String post_id, String user_id);
@@ -353,6 +358,47 @@ class ApiHelperImpl extends ApiHelper {
       return Left(e);
     }
   }
+
+  @override
+  Future<Either<CustomException, CategoryModel>> getCategoryInfo(String letter) async {
+    try {
+      final response = await _api
+          .get(ApiEndPoints.category_list + "/" + letter );
+      if (response['status'] == 200) {
+        return Right(CategoryModel.fromJson(response));
+      } else {
+        return Left(throw CustomException(
+            200,
+            response['error'] == null
+                ? response['error']['message']
+                : response['message'],
+            "'"));
+      }
+    } on CustomException catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<CustomException, CategoryModel>> getSampleText() async {
+    try {
+      final response = await _api
+          .get(ApiEndPoints.sample_text);
+      if (response['status'] == 200) {
+        return Right(CategoryModel.fromJson(response));
+      } else {
+        return Left(throw CustomException(
+            200,
+            response['error'] == null
+                ? response['error']['message']
+                : response['message'],
+            "'"));
+      }
+    } on CustomException catch (e) {
+      return Left(e);
+    }
+  }
+
 
   @override
   Future<Either<CustomException, ProfileModel>> getProfileInfo(String userId) async {

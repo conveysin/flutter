@@ -25,6 +25,7 @@ import '../feature/login_screen/letsStart_screen.dart';
 
 import '../feature/pilot/pilot_post_page.dart';
 import '../feature/profile/cubit/profile_cubit.dart';
+import '../feature/category/cubit/category_cubit.dart';
 import '../feature/splash_screen/cubit/splash_cubit.dart';
 import '../feature/splash_screen/splash_screen_view.dart';
 
@@ -66,6 +67,7 @@ class Router {
   final homeCubit = HomeCubit();
   final profileCubit = ProfileCubit();
   final logoutCubit = LogoutCubit();
+  final categoryCubit = CategoryCubit();
   final postCubit = PostCubit();
 
   Route<dynamic> generateRoute(RouteSettings settings) {
@@ -123,6 +125,9 @@ class Router {
                     ),
                     BlocProvider.value(
                       value: profileCubit,
+                    ),
+                    BlocProvider.value(
+                      value: categoryCubit,
                     ),
                     BlocProvider.value(
                       value: logoutCubit,
