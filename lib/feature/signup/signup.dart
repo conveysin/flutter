@@ -42,6 +42,7 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
 
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String token = '';
+  // String Mobile = '';
 
   @override
   void onInit() {
@@ -93,9 +94,9 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
               print('UserID>${state.signupData?.userId}');
               print('userIDPRointrd');
               ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
-                  SnackBar(content: Text('${"Registration Successfully"}')));
+                  SnackBar(content: Text('${"Enter OTP to complte SignUP"}')));
               final bundle = Bundle()
-                ..put('mobile', _mobileController.text)
+                ..put('mobile',  _mobileController.text)
                 ..put('userID', state.signupData?.userId);
               navigateToScreenAndReplace(Screen.OTP, bundle);
             }
@@ -138,40 +139,8 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
                             isValid: state.isName,
                             usernameType: UsernameType.name,
                             hinttext: CommonButtons.Name,
+                            // hinttext: widget.arguments?.get('mobile'),
                             keyboardtype: TextInputType.text,
-                            onChange: () {},
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          UsernameEditText(
-                            _mobileController,
-                            isValid: state.isMobile,
-                            usernameType: UsernameType.mobile,
-                            hinttext: CommonButtons.MOBILE_NUMBER,
-                            keyboardtype: TextInputType.number,
-                            onChange: () {},
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          UsernameEditText(
-                            _passwordController,
-                            isValid: state.isPassword,
-                            usernameType: UsernameType.passwoord,
-                            hinttext: StringConst.sentence.Password,
-                            keyboardtype: TextInputType.visiblePassword,
-                            onChange: () {},
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          UsernameEditText(
-                            _confirmpasswordController,
-                            isValid: state.isPassword,
-                            usernameType: UsernameType.passwoord,
-                            hinttext: StringConst.sentence.ConfirmPassword,
-                            keyboardtype: TextInputType.visiblePassword,
                             onChange: () {},
                           ),
                           SizedBox(
@@ -351,24 +320,25 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
                               isLoading: state.isSubmitting!,
                               textSize: 14,
                               onPressed: () async {
-                                (_mobileController.text != null &&
-                                        _mobileController.text.isNotEmpty &&
-                                        _nameController.text != null &&
+                                // (_mobileController.text != null &&
+                                //         _mobileController.text.isNotEmpty &&
+                                        (_nameController.text != null &&
                                         _nameController.text.isNotEmpty &&
-                                        _passwordController.text != null &&
-                                        _passwordController.text.isNotEmpty &&
-                                        _confirmpasswordController.text !=
-                                            null &&
-                                        _confirmpasswordController
-                                            .text.isNotEmpty &&
+                                //         _passwordController.text != null &&
+                                //         _passwordController.text.isNotEmpty &&
+                                //         _confirmpasswordController.text !=
+                                //             null &&
+                                //         _confirmpasswordController
+                                //             .text.isNotEmpty &&
                                         state.districtID.isNotEmpty &&
                                         state.mandalID.isNotEmpty &&
                                         state.villageID.isNotEmpty)
                                     ? _signupBloc.signup(
                                         _nameController.text,
-                                        _mobileController.text,
-                                        _passwordController.text,
-                                        _confirmpasswordController.text,
+                                        // _mobileController.text,
+                                        widget.arguments?.get('mobile'),
+                                        // _passwordController.text,
+                                        // _confirmpasswordController.text,
                                         state.districtID,
                                         state.mandalID,
                                         state.villageID,
@@ -393,11 +363,11 @@ class _SignupScreeState extends AppScreenState<SignupScreen> {
                               children: <TextSpan>[
                                 TextSpan(
                                     text:
-                                        'Are you not able to find your village, would you like to onboard your village,Reach us ',
+                                        'Are you not able to find your village, would you like to onboard your village, Reach us ',
                                     style: textTheme.subtitle1?.copyWith(
                                         fontSize: 10, color: AppColors.black)),
                                 TextSpan(
-                                    text: 'info@conveys.in',
+                                    text: 'WhatsApp: 9398026739 or Email: info@conveys.in',
                                     style: textTheme.subtitle2?.copyWith(
                                         fontSize: 12, color: AppColors.black)),
                               ],

@@ -75,7 +75,7 @@ class SENTENCE {
   String get Enter_your_username_password =>'Enter your mobile number and password';
   String get Enter_your_mobile_number =>'Enter your mobile number';
   String get Username =>'Username';
-  String get Password =>'Password';
+  String get Password =>'OTP';
   String get Old_Password =>'Old Password';
   String get ConfirmPassword => "Confirm Password";
 }
@@ -152,13 +152,13 @@ class CommonButtons {
   static const String Get_Started = "Get Started";
   static const String Skip = "Skip";
   static const String Resend = "Resend";
-  static const String Forget_password = "Forget Password";
+  static const String Forget_password = "Resend OTP";
   static const String Cancel = "Cancel";
   static const String Send_OTP = "Send OTP";
   static const String Sign_in = "Sign in";
   static const String RETRY = "Retry";
   static const String SAVE = "Save";
-  static const String SUBMIT = "SUBMIT";
+  static const String SUBMIT = "Confirm";
   static const String UPDATE = "Update";
   static const String DELETE = "Delete";
   // startup
@@ -166,7 +166,7 @@ class CommonButtons {
   static const String CANCEL = "Cancel";
   static const String FINISH = "Finish";
   // welcome
-  static const String LOGIN = "Login";
+  static const String LOGIN = "Eenter OTP";
   static const String SIGNUP = "Sign up";
   //user type
   static const String USER = "User";

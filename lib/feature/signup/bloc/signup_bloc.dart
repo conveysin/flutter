@@ -136,9 +136,11 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     });
   }
 
-  Future<void> signup(String name,String mobile, String password,String confirmpassword,var districtID,var mandalID,var villageID,String device_id) async {
+  // Future<void> signup(String name,String mobile, String password,String confirmpassword,var districtID,var mandalID,var villageID,String device_id) async {
+  Future<void> signup(String name,String mobile,var districtID,var mandalID,var villageID,String device_id) async {
     emit(state.copyWith(isSubmitting: true));
-    final dailyQuoteResponse = await _dataHelper.apiHelper.executeSignup(name,mobile,password,confirmpassword,districtID,mandalID,villageID,device_id);
+    // final dailyQuoteResponse = await _dataHelper.apiHelper.executeSignup(name,mobile,password,confirmpassword,districtID,mandalID,villageID,device_id);
+    final dailyQuoteResponse = await _dataHelper.apiHelper.executeSignup(name,mobile,districtID,mandalID,villageID,device_id);
     dailyQuoteResponse.fold((l) {
       print("LL_BLOCK>>"+l.errorMessage);
       print("LL_BLOCK>>"+l.errorCode.toString());

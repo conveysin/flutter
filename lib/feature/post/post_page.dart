@@ -256,11 +256,12 @@ class _PostPageState extends AppScreenState<PostPage> {
                               color: AppColors.white,
                               borderRadius: BorderRadius.circular(5)),
                           width: double.infinity,
-                          height: 18.h,
+                          // height: 18.h,
                           child:  Column(
                             children: [
                               (_postList[i].contentEnglish !=null)?  Html(
-                                data:  (_postList[i].contentEnglish.toString().isNotEmpty && _postList[i].contentEnglish.toString().length>140) ? _postList[i].contentEnglish.toString().substring(0,140)+"..." : _postList[i].contentEnglish.toString(),
+                                data:  (_postList[i].contentEnglish.toString().isNotEmpty) ? _postList[i].contentEnglish.toString() : _postList[i].contentEnglish.toString(),
+                                // data:  (_postList[i].contentEnglish.toString().isNotEmpty && _postList[i].contentEnglish.toString().length>140) ? _postList[i].contentEnglish.toString().substring(0,140)+"..." : _postList[i].contentEnglish.toString(),
                                 tagsList: Html.tags..addAll(["bird", "flutter"]),
                                 style: {
                                   "table": Style(
@@ -337,7 +338,7 @@ class _PostPageState extends AppScreenState<PostPage> {
                                   });
                                 },
                               ):Text(''),
-                              Text('Click here to Read More',style: textTheme.subtitle1?.copyWith(color: AppColors.darkBlue,fontWeight: FontWeight.bold,fontSize: 16),),
+                              // Text('Click2 here to Read More',style: textTheme.subtitle1?.copyWith(color: AppColors.darkBlue,fontWeight: FontWeight.bold,fontSize: 16),),
                             ],
                           )
                         ),
