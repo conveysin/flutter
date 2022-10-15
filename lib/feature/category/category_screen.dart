@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
@@ -12,11 +13,13 @@ import '../../Model/MandalModel.dart';
 import '../../Model/VillageModel.dart';
 import '../../core/app_screen.dart';
 import '../../core/bundle.dart';
+import '../../core/routes.dart';
 import '../../data/data_helper.dart';
 import '../../utility/colors.dart';
 import '../../utility/images.dart';
 import '../../widgets/AppLoader.dart';
 
+import '../../widgets/app_edit_text.dart';
 import 'cubit/category_cubit.dart';
 
 class CategoryPage extends AppScreen {
@@ -30,146 +33,274 @@ class CategoryPage extends AppScreen {
   _CategoryPageState createState() => _CategoryPageState();
 }
 
-class _CategoryPageState extends AppScreenState<CategoryPage>
-    with SingleTickerProviderStateMixin {
-  final DataHelper _dataHelper = DataHelperImpl.instance;
-  bool _status = true;
-  var getSampleText='';
-  final FocusNode myFocusNode = FocusNode();
+class _CategoryPageState extends AppScreenState<CategoryPage> {
+  final TextEditingController _searchController = TextEditingController();
   late CategoryCubit _cubit;
-  final _nameController = TextEditingController();
-  String _userId = '',
-      _name = '';
+  final DataHelper _dataHelper = DataHelperImpl.instance;
+  String userID = '';
+  String villageID = '';
+
   @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
+  void initState() {
     _cubit = BlocProvider.of<CategoryCubit>(context);
-
     _getUserId();
-    // _cubit.getProfileInfo('2');
+    _getVillageId();
+    super.initState();
   }
-
 
   @override
   Widget setView() {
-    return BlocConsumer<CategoryCubit, CategoryState>(listener: (context, state) {
-      // if (state.isEditcategoryDataSuccess) {
-      //   _status = true;
-      //   FocusScope.of(context).requestFocus(new FocusNode());
-      //   ScaffoldMessenger.of(globalKey.currentContext!).showSnackBar(
-      //       SnackBar(content: Text('Profile Successfully Updated')));
-      // }
+    return BlocConsumer<CategoryCubit, CategoryState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (!state.iscategoryDataFailure) {
+            if (!state.iscategoryDataLoading) {
+              if (state.categoryData.isEmpty) {
+                return SafeArea(
+                    child: Container(
+                        color: AppColors.letsStartBackground,
+                        child: Center(
+                            child: Text(
+                          state.errorMsg,
+                          style: textTheme.headline6
+                              ?.copyWith(color: AppColors.black),
+                        ))));
+              }
 
-      // if(state.iscategoryDataSuccess){
-      //   _setValue(state.categoryData!,state);
-      // }
+              return SafeArea(
+                  child: Scaffold(
+                appBar: _appBar(25.h, context, state, textTheme),
 
-      // if (state.iscategoryDataFailure) {
-      //   ScaffoldMessenger.of(globalKey.currentContext!)
-      //       .showSnackBar(SnackBar(content: Text('${state.errorMsg}')));
-      // }
-    }, builder: (context, state) {
-      if (state.categoryData != null ) {
-        final SampleText = state.categoryData.msg;
-        // final todo = todos[index];
-        print('District>>>>${state.categoryData}');
-        print('DistrictData>>>>${state.categoryData.msg}');
-        // String? SampleText = state.categoryData.msg;
-        return SafeArea(
-          child: Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: AppColors.letsStartBackground,
-              child: new Container(
-                color: Colors.white,
-                child: new ListView(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        new Container(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 25.0),
-                            child: new Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 25.0, right: 25.0, top: 15.0),
-                                    child: new Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      
-                                      children: <Widget>[
-                                        new Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            new Text(
-                                              "${SampleText}",
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                /*AppBar(
+                      backgroundColor: AppColors.backgroundColor,
+                      actions: [],
+                      automaticallyImplyLeading: false,
+                      title: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'Sponsored By : ',
+                                style: textTheme.subtitle1?.copyWith(
+                                    fontSize: 15, color: AppColors.white)),
+                            TextSpan(
+                                text: state.sponser_name,
+                                style: textTheme.subtitle2?.copyWith(
+                                    fontSize: 18, color: AppColors.white)),
+                          ],
+                        ),
+                      ),
+                    ),*/
+                body: Container(
+                  color: AppColors.letsStartBackground,
+                  child: Column(children: [
+                    CategoryList(state.categoryData),
+                  ]),
+                ),
+              ));
+            } else {
+              return AppLoader(
+                isLoading: true,
+              );
+            }
+          } else {
+            return SafeArea(
+                child: Container(
+                    color: AppColors.white,
+                    child: Center(
+                        child: Text(
+                      state.errorMsg,
+                      style: textTheme.headline6,
+                    ))));
+          }
+        });
+  }
+
+  Widget CategoryList(List<CategoryData> list) {
+    return SizedBox(
+      height: 100.h - 220,
+      child: Container(
+        color: AppColors.letsStartBackground,
+        child: Column(
+          children: [
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 3,
+                childAspectRatio: (2 / 2.9),
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                //physics:BouncingScrollPhysics(),
+                padding: EdgeInsets.all(5.0),
+                children: list
+                    .map(
+                      (data) => GestureDetector(
+                          onTap: () {
+                            Bundle bundle = new Bundle()
+                              ..put('departmentID', data.id)
+                              ..put('departmentName', data.name);
+                          //  navigateToScreen(Screen.PostPage, bundle);
+
+                            Navigator.pushNamed(
+                              context,
+                              Screen.PostPage.toString(),
+                              arguments: bundle,
+                            ).then((_) {
+                              _cubit.getCategoryInfo(userID);
+
+                          /*    setState(() {
+                                _getVillageId();
+                              });*/
+
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(30),
+
+                            //  margin:EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                            //color:data.color,
+                            color: Colors.white,
+                            child: Stack(children: [
+                              Positioned(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Stack(
+                                          children: [
+
+                                            // Positioned(
+                                            //     child: Icon(
+                                            //   Icons.mark_chat_unread_rounded,
+                                            //   color: AppColors.lightBlueShade1,
+                                            //   size: 22,
+                                            // )),
+
+                                            // Positioned(
+                                            //     right: 1,
+                                            //     top: 4,
+                                            //     child: Text(
+                                            //       data.id.toString(),
+                                            //       style: textTheme.headline1
+                                            //           ?.copyWith(fontSize: 16,color: AppColors.darkBlue),
+                                            //     )),
                                           ],
                                         ),
                                       ],
-                                    )),
-
-                                // Padding(
-                                //     padding: EdgeInsets.only(
-                                //         left: 25.0, right: 25.0, top: 2.0),
-                                //     child: new Row(
-                                //       mainAxisSize: MainAxisSize.max,
-                                //       children: <Widget>[
-                                //         new Flexible(
-                                //           child: new TextField(
-                                //             controller: _nameController,
-                                //             decoration: const InputDecoration(
-                                //               hintText: "Enter Your Name",
-                                //             ),
-                                //             enabled: !_status,
-                                //             autofocus: !_status,
-                                //             onChanged: (text) {
-                                //               _name = text;
-                                //             },
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     )),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              )),
-        );
-      }
-
-      return AppLoader(
-        isLoading: true,
-      );
-    });
+                                    ),
+                                    data.logo != null
+                                        ? CachedNetworkImage(
+                                            imageUrl: data.logo!,
+                                            height: 55,
+                                            width: 55,
+                                            placeholder: (context, url) =>
+                                                CircularProgressIndicator(),
+                                            // errorWidget: (context, url, error) => Icon(Icons.error),
+                                          )
+                                        : AppLoader(),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    (data.name != null)
+                                        ? Text(data.name!,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black),
+                                            textAlign: TextAlign.center)
+                                        : Text(''),
+                                  ],
+                                ),
+                              ),
+                            ]),
+                          )),
+                    )
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
-
-
-  // _setValue(CategoryInfo? categoryData, CategoryState state) {
-  //   _name = categoryData!.name!;
-  //   _nameController.text = _name;
-  // }
 
   _getUserId() async {
     _dataHelper.cacheHelper.getUserInfo().then((value) {
-      setState(()  {
-        _userId = value;
-        _cubit.getSampleText(_userId);
+      setState(() {
+        userID = value;
+        print("UserId>>>>>$userID");
+      });
+    });
+  }
+
+  _getVillageId() async {
+    _dataHelper.cacheHelper.getVillage().then((value) {
+      setState(() {
+        print("VillageId>>>>>$value");
+        villageID = value;
+        _cubit.getCategoryInfo(userID);
       });
     });
   }
 
 }
+
+_appBar(height, BuildContext context, CategoryState state, textTheme) =>
+    PreferredSize(
+      preferredSize: Size(MediaQuery.of(context).size.width, 130),
+      child: Stack(
+        children: <Widget>[
+          // Container(
+          //   // Background
+          //   child: Center(
+          //     child: Text(
+          //       "Phone Book",
+          //       style: TextStyle(
+          //           fontSize: 20.0,
+          //           fontWeight: FontWeight.w600,
+          //           color: AppColors.white),
+          //     ),
+          //   ),
+          //   color: AppColors.darkBlue,
+          //   height: 80,
+          //   width: MediaQuery.of(context).size.width,
+          // ),
+          // Container(), // Required some widget in between to float AppBar
+          Positioned(
+            // To take AppBar Size only
+            top: 60.0,
+            left: 20.0,
+            right: 20.0,
+            child: AppBar(
+              backgroundColor: Colors.blueAccent,
+              automaticallyImplyLeading: false,
+              primary: false,
+              title: RichText(
+                maxLines: 2,
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: 'Sponsored By>> ',
+                        style: textTheme.subtitle1
+                            ?.copyWith(fontSize: 13.0, color: AppColors.white)),
+                    TextSpan(
+                        text: "testsponsor",
+                        style: textTheme.subtitle2
+                            ?.copyWith(fontSize: 16.0, color: AppColors.white)),
+                  ],
+                ),
+              ),
+              /*       actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search, color: Theme.of(context).primaryColor), onPressed: () {},),
+            IconButton(icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor),
+              onPressed: () {},)
+          ],*/
+            ),
+          )
+        ],
+      ),
+    );
+
+

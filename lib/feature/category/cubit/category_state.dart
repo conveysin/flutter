@@ -6,7 +6,8 @@ class CategoryState extends Equatable {
   final bool iscategoryDataLoading;
   final bool iscategoryDataSuccess;
   final bool isEditcategoryDataSuccess ;
-  CategoryModel categoryData;
+  // CategoryModel categoryData;
+  final List<CategoryData> categoryData;
   final String errorMsg;
   // List<DistrictData> districtData;
   // List<MandalData> mandalData;
@@ -57,7 +58,7 @@ class CategoryState extends Equatable {
     bool? iscategoryDataSuccess,
     bool? isEditcategoryDataSuccess,
     String? errorMsg,
-    CategoryModel? categoryData,
+    List<CategoryData>? categoryData,
     // String? districtID,
     // String? mandalID,
     // String? villageID,
@@ -67,7 +68,7 @@ class CategoryState extends Equatable {
       iscategoryDataLoading: iscategoryDataLoading ?? this.iscategoryDataLoading,
       iscategoryDataSuccess: iscategoryDataSuccess ?? this.iscategoryDataSuccess,
       isEditcategoryDataSuccess: isEditcategoryDataSuccess ?? this.isEditcategoryDataSuccess,
-      errorMsg: errorMsg ?? this.errorMsg,
+      errorMsg: errorMsg ?? this.errorMsg, 
       categoryData: categoryData ?? this.categoryData,
       // districtData: disctrictData ?? this.districtData,
       // mandalData: mandalData ?? this.mandalData,

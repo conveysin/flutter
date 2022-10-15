@@ -15,7 +15,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   CategoryCubit()
       : super(
     CategoryState(
-categoryData: new CategoryModel()
+categoryData:<CategoryData>[],
       // villageData: [],
       // mandalData: [],
       // districtData: []
@@ -31,14 +31,15 @@ categoryData: new CategoryModel()
 
 
 
-  Future<void> getSampleText(String userId) async {
+  Future<void> getCategoryInfo(String userId) async {
     emit(state.copyWith(iscategoryDataLoading: true));
-    final dailyQuoteResponse = await _dataHelper.apiHelper.getSampleText();
+    final dailyQuoteResponse = await _dataHelper.apiHelper.getCategoryInfo("");
     // print(dailyQuoteResponse);
     dailyQuoteResponse.fold((l) {
       emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: true,isEditcategoryDataSuccess:false,errorMsg:l.errorMessage));
     }, (r) {
-      emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: false,iscategoryDataSuccess :true,isEditcategoryDataSuccess:false, categoryData: r));
+      emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: false,iscategoryDataSuccess :true,isEditcategoryDataSuccess:false, categoryData: r.data));
+      // emit(state.copyWith(errorMsg:r.msg.toString(),categoryDatas: r.data));
     });
   }
   // Future<void> fetchDistrict(String userId) async {
