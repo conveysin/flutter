@@ -22,6 +22,8 @@ import '../../widgets/AppLoader.dart';
 import '../../widgets/app_edit_text.dart';
 import 'cubit/category_cubit.dart';
 
+import 'package:flutter/cupertino.dart';
+
 class CategoryPage extends AppScreen {
   CategoryPage({
     RouteObserver<Route>? routeObserver,
@@ -34,11 +36,11 @@ class CategoryPage extends AppScreen {
 }
 
 class _CategoryPageState extends AppScreenState<CategoryPage> {
-  final TextEditingController _searchController = TextEditingController();
   late CategoryCubit _cubit;
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String userID = '';
   String villageID = '';
+  final TextEditingController _searchController = new  TextEditingController(text:"");
 
   @override
   void initState() {
@@ -169,22 +171,14 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
                                       children: [
                                         Stack(
                                           children: [
-
-                                            // Positioned(
-                                            //     child: Icon(
-                                            //   Icons.mark_chat_unread_rounded,
-                                            //   color: AppColors.lightBlueShade1,
-                                            //   size: 22,
-                                            // )),
-
-                                            // Positioned(
-                                            //     right: 1,
-                                            //     top: 4,
-                                            //     child: Text(
-                                            //       data.id.toString(),
-                                            //       style: textTheme.headline1
-                                            //           ?.copyWith(fontSize: 16,color: AppColors.darkBlue),
-                                            //     )),
+                                            // Text(
+                                            //    "hellowrold",
+                                            //    style: textTheme.headline6?.copyWith(
+                                            //        fontSize: 24,
+                                            //        fontWeight: FontWeight.bold,
+                                            //         wordSpacing: 0.2,
+                                            //        color: AppColors.letsStartTextColor),
+                                            //  ),
                                           ],
                                         ),
                                       ],
@@ -251,54 +245,59 @@ _appBar(height, BuildContext context, CategoryState state, textTheme) =>
       preferredSize: Size(MediaQuery.of(context).size.width, 130),
       child: Stack(
         children: <Widget>[
-          // Container(
-          //   // Background
-          //   child: Center(
-          //     child: Text(
-          //       "Phone Book",
-          //       style: TextStyle(
-          //           fontSize: 20.0,
-          //           fontWeight: FontWeight.w600,
-          //           color: AppColors.white),
-          //     ),
-          //   ),
-          //   color: AppColors.darkBlue,
-          //   height: 80,
-          //   width: MediaQuery.of(context).size.width,
-          // ),
-          // Container(), // Required some widget in between to float AppBar
-          Positioned(
-            // To take AppBar Size only
-            top: 60.0,
-            left: 20.0,
-            right: 20.0,
-            child: AppBar(
-              backgroundColor: Colors.blueAccent,
-              automaticallyImplyLeading: false,
-              primary: false,
-              title: RichText(
-                maxLines: 2,
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: 'Sponsored By>> ',
-                        style: textTheme.subtitle1
-                            ?.copyWith(fontSize: 13.0, color: AppColors.white)),
-                    TextSpan(
-                        text: "testsponsor",
-                        style: textTheme.subtitle2
-                            ?.copyWith(fontSize: 16.0, color: AppColors.white)),
-                  ],
+          Container(
+            width: double.infinity,
+                height: 40,
+                color: Colors.white,
+                child: const Center(
+                // padding: const EdgeInsets.all(10.0),
+                child: CupertinoSearchTextField(
+                // controller: _searchController.Text,
+                // onChanged: (value){},
+                // onSubmitted: () {},
+                prefixInsets: EdgeInsets.only(left: 20),
+                suffixInsets: EdgeInsets.only(right: 20),
+                itemSize: 30,
+                itemColor: Color.fromARGB(255, 2, 58, 243),
+                // autocorrect: true,
+                  ),
                 ),
+
               ),
+          // Container(), // Required some widget in between to float AppBar
+          // Positioned(
+          //   // To take AppBar Size only
+          //   top: 60.0,
+          //   left: 20.0,
+          //   right: 20.0,
+          //   child: AppBar(
+          //     backgroundColor: Colors.blueAccent,
+          //     automaticallyImplyLeading: false,
+          //     primary: false,
+          //     title: RichText(
+          //       maxLines: 2,
+          //       text: TextSpan(
+          //         children: 
+          //         <TextSpan>[
+          //           TextSpan(
+          //               text: 'Sponsored By>> ',
+          //               style: textTheme.subtitle1
+          //                   ?.copyWith(fontSize: 13.0, color: AppColors.white)),
+          //           TextSpan(
+          //               text: "testsponsor",
+          //               style: textTheme.subtitle2
+          //                   ?.copyWith(fontSize: 16.0, color: AppColors.white)),
+          //         ],
+          //       ),
+          //     ),
               /*       actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search, color: Theme.of(context).primaryColor), onPressed: () {},),
             IconButton(icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor),
               onPressed: () {},)
           ],*/
-            ),
-          )
+            // ),
+          // )
         ],
       ),
     );

@@ -31,60 +31,40 @@ categoryData:<CategoryData>[],
 
 
 
-  Future<void> getCategoryInfo(String userId) async {
+  // Future<void> getCategoryInfo(String letter) async {
+  //   emit(state.copyWith(iscategoryDataLoading: true));
+  //   final dailyQuoteResponse = await _dataHelper.apiHelper.getCategoryInfo("");
+  //   // print(dailyQuoteResponse);
+  //   dailyQuoteResponse.fold((l) {
+  //     emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: true,isEditcategoryDataSuccess:false,errorMsg:l.errorMessage));
+  //   }, (r) {
+  //     emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: false,iscategoryDataSuccess :true,isEditcategoryDataSuccess:false, categoryData: r.data));
+  //     // emit(state.copyWith(errorMsg:r.msg.toString(),categoryDatas: r.data));
+  //   });
+  // }
+
+
+  Future<void> getCategoryInfo(String letter) async {
+
     emit(state.copyWith(iscategoryDataLoading: true));
     final dailyQuoteResponse = await _dataHelper.apiHelper.getCategoryInfo("");
-    // print(dailyQuoteResponse);
     dailyQuoteResponse.fold((l) {
-      emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: true,isEditcategoryDataSuccess:false,errorMsg:l.errorMessage));
+      print('HomeLoading>>>>Failed');
+      emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: true,errorMsg:l.errorMessage));
     }, (r) {
-      emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: false,iscategoryDataSuccess :true,isEditcategoryDataSuccess:false, categoryData: r.data));
-      // emit(state.copyWith(errorMsg:r.msg.toString(),categoryDatas: r.data));
+      if(r.status.toString() == "404"){
+        print('HomeLoading>>>>Success');
+        print(r.msg);
+        emit(state.copyWith(iscategoryDataLoading: false));
+        emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: true, errorMsg:r.msg));
+      }else{
+        print('HomeLoading>>>>Success');
+        print(r.msg);
+        emit(state.copyWith(iscategoryDataLoading: false));
+        emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: false, categoryData: r.data,errorMsg:r.msg));
+      }
+
     });
   }
-  // Future<void> fetchDistrict(String userId) async {
-  //   emit(state.copyWith(iscategoryDataLoading: false));
-  //   final dailyQuoteResponse = await _dataHelper.apiHelper.getDistrictList();
-  //   dailyQuoteResponse.fold((l) {
-  //     emit(state.copyWith(iscategoryDataLoading: false,isEditcategoryDataSuccess:false,iscategoryDataSuccess:false,errorMsg: l.errorMessage));
-  //   }, (r) {
-  //     getProfileInfo(userId);
-  //     emit(state.copyWith(iscategoryDataLoading: false,isEditcategoryDataSuccess:false,iscategoryDataSuccess:false,iscategoryDataFailure: false,disctrictData: r.data));
-  //   });
-  // }
-
-
-
-  // Future<void> fetchMandal(String districtID) async {
-  //   emit(state.copyWith(iscategoryDataLoading: false));
-  //   final dailyQuoteResponse = await _dataHelper.apiHelper.getMandalList(districtID);
-  //   dailyQuoteResponse.fold((l) {
-  //     emit(state.copyWith(iscategoryDataLoading: false,isEditcategoryDataSuccess:false,iscategoryDataSuccess:false,errorMsg: l.errorMessage));
-  //   }, (r) {
-  //     emit(state.copyWith(iscategoryDataLoading: false,isEditcategoryDataSuccess:false,iscategoryDataSuccess:false,mandalData: r.data));
-  //   });
-  // }
-
-  // Future<void> fetchVillage(String districtID,String mandalID) async {
-  //   emit(state.copyWith(iscategoryDataLoading: false));
-  //   final dailyQuoteResponse = await _dataHelper.apiHelper.getVillageList(districtID,mandalID);
-  //   dailyQuoteResponse.fold((l) {
-  //     emit(state.copyWith(iscategoryDataLoading: false,isEditcategoryDataSuccess:false,iscategoryDataSuccess:false,errorMsg: l.errorMessage));
-  //   }, (r) {
-  //     emit(state.copyWith(iscategoryDataLoading: false,isEditcategoryDataSuccess:false,iscategoryDataSuccess:false,villageData: r.data));
-  //   });
-  // }
-
-  // Future<void> editProfile(String userId,String name, String district,String mandal,String village) async {
-  //   emit(state.copyWith(iscategoryDataLoading: true));
-  //   final dailyQuoteResponse = await _dataHelper.apiHelper.edit_profile(userId,name,district,mandal,village);
-  //   dailyQuoteResponse.fold((l) {
-  //     emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: true,iscategoryDataSuccess:false,errorMsg:l.errorMessage));
-  //   }, (r) async {
-  //     await _dataHelper.cacheHelper.saveVillage(village);
-  //     getProfileInfo(userId);
-  //     emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: false, iscategoryDataSuccess:false,isEditcategoryDataSuccess: true));
-  //   });
-  // }
 
 }
