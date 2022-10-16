@@ -40,7 +40,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String userID = '';
   String villageID = '';
-  final TextEditingController _searchController = new  TextEditingController(text:"");
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -49,6 +49,28 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
     _getVillageId();
     super.initState();
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //       appBar: AppBar(
+  //         title: const Text("CupertinoSearchTextField"),
+  //       ),
+  //       body: CupertinoPageScaffold(
+  //         child: Center(
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(10.0),
+  //             child: CupertinoSearchTextField(
+  //               controller: _searchController,
+  //               onChanged: (value) {},
+  //               onSubmitted: (value) {},
+  //               autocorrect: true,
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  // }
 
   @override
   Widget setView() {
@@ -71,8 +93,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
 
               return SafeArea(
                   child: Scaffold(
-                appBar: _appBar(25.h, context, state, textTheme),
-
+                    appBar: _appBar(25.h, context, state, textTheme, _searchController),
                 /*AppBar(
                       backgroundColor: AppColors.backgroundColor,
                       actions: [],
@@ -96,8 +117,10 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
                   color: AppColors.letsStartBackground,
                   child: Column(children: [
                     CategoryList(state.categoryData),
+
                   ]),
                 ),
+
               ));
             } else {
               return AppLoader(
@@ -240,7 +263,8 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
 
 }
 
-_appBar(height, BuildContext context, CategoryState state, textTheme) =>
+
+_appBar(height, BuildContext context, CategoryState state, textTheme, TextEditingController _searchController) =>
     PreferredSize(
       preferredSize: Size(MediaQuery.of(context).size.width, 130),
       child: Stack(
@@ -249,7 +273,7 @@ _appBar(height, BuildContext context, CategoryState state, textTheme) =>
             width: double.infinity,
                 height: 40,
                 color: Colors.white,
-                child: const Center(
+                child: Center(
                 // padding: const EdgeInsets.all(10.0),
                 child: CupertinoSearchTextField(
                 // controller: _searchController.Text,
@@ -259,6 +283,7 @@ _appBar(height, BuildContext context, CategoryState state, textTheme) =>
                 suffixInsets: EdgeInsets.only(right: 20),
                 itemSize: 30,
                 itemColor: Color.fromARGB(255, 2, 58, 243),
+                controller: _searchController,
                 // autocorrect: true,
                   ),
                 ),
@@ -301,5 +326,6 @@ _appBar(height, BuildContext context, CategoryState state, textTheme) =>
         ],
       ),
     );
+    
 
 
