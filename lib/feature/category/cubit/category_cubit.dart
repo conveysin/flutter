@@ -47,7 +47,7 @@ categoryData:<CategoryData>[],
   Future<void> getCategoryInfo(String letter) async {
 
     emit(state.copyWith(iscategoryDataLoading: true));
-    final dailyQuoteResponse = await _dataHelper.apiHelper.getCategoryInfo("");
+    final dailyQuoteResponse = await _dataHelper.apiHelper.getCategoryInfo(letter);
     dailyQuoteResponse.fold((l) {
       print('HomeLoading>>>>Failed');
       emit(state.copyWith(iscategoryDataLoading: false,iscategoryDataFailure: true,errorMsg:l.errorMessage));

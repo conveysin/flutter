@@ -40,13 +40,27 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String userID = '';
   String villageID = '';
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController(text: "");
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _printLatestValue() {
+    print('Second text field: ${_searchController.text}');
+  }
 
   @override
   void initState() {
     _cubit = BlocProvider.of<CategoryCubit>(context);
     _getUserId();
     _getVillageId();
+    _getSearchCat();
+    _searchController.addListener(_printLatestValue);
     super.initState();
   }
 
@@ -256,9 +270,13 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
       setState(() {
         print("VillageId>>>>>$value");
         villageID = value;
-        _cubit.getCategoryInfo(userID);
+        // _cubit.getCategoryInfo(userID);
       });
     });
+  }
+
+  _getSearchCat() async {
+        _cubit.getCategoryInfo(_searchController.text);
   }
 
 }
@@ -277,13 +295,15 @@ _appBar(height, BuildContext context, CategoryState state, textTheme, TextEditin
                 // padding: const EdgeInsets.all(10.0),
                 child: CupertinoSearchTextField(
                 // controller: _searchController.Text,
-                // onChanged: (value){},
+                onChanged: (value){
+                controller: _searchController;
+                },
                 // onSubmitted: () {},
                 prefixInsets: EdgeInsets.only(left: 20),
                 suffixInsets: EdgeInsets.only(right: 20),
                 itemSize: 30,
                 itemColor: Color.fromARGB(255, 2, 58, 243),
-                controller: _searchController,
+                // controller: _searchController,
                 // autocorrect: true,
                   ),
                 ),
