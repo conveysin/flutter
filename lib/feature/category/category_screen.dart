@@ -40,6 +40,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String userID = '';
   String villageID = '';
+  String value = "";
   final TextEditingController _searchController = TextEditingController(text: "");
 
   @override
@@ -59,7 +60,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
     _cubit = BlocProvider.of<CategoryCubit>(context);
     _getUserId();
     _getVillageId();
-    _getSearchCat();
+    _getSearchCat(value);
     _searchController.addListener(_printLatestValue);
     super.initState();
   }
@@ -107,7 +108,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
 
               return SafeArea(
                   child: Scaffold(
-                    appBar: _appBar(25.h, context, state, textTheme, _searchController),
+                    appBar: _appBar(25.h, context, state, textTheme, _searchController, _getSearchCat),
                 /*AppBar(
                       backgroundColor: AppColors.backgroundColor,
                       actions: [],
@@ -275,14 +276,16 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
     });
   }
 
-  _getSearchCat() async {
-        _cubit.getCategoryInfo(_searchController.text);
+  _getSearchCat(value) async {
+      setState(() {
+        _cubit.getCategoryInfo(value);
+        print("contx${value}");
+      });
   }
-
 }
 
 
-_appBar(height, BuildContext context, CategoryState state, textTheme, TextEditingController _searchController) =>
+_appBar(height, BuildContext context, CategoryState state, textTheme, TextEditingController _searchController, _getSearchCat) =>
     PreferredSize(
       preferredSize: Size(MediaQuery.of(context).size.width, 130),
       child: Stack(
@@ -296,7 +299,8 @@ _appBar(height, BuildContext context, CategoryState state, textTheme, TextEditin
                 child: CupertinoSearchTextField(
                 // controller: _searchController.Text,
                 onChanged: (value){
-                controller: _searchController;
+                // controller: _searchController.text = value;
+                _getSearchCat(value);
                 },
                 // onSubmitted: () {},
                 prefixInsets: EdgeInsets.only(left: 20),
