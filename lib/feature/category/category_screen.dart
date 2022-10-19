@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:getinforme/Model/CategoryModel.dart';
 import 'package:getinforme/Model/ProfileModel.dart';
+import 'package:getinforme/Model/SendPushNotificationModel.dart';
 import 'package:getinforme/Thems/Responsive.dart';
 
 import '../../Model/DistrictModel.dart';
@@ -40,8 +41,10 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
   final DataHelper _dataHelper = DataHelperImpl.instance;
   String userID = '';
   String villageID = '';
-  String value = "";
+ List<Map<String, dynamic>> _foundUsers = [];
   final TextEditingController _searchController = TextEditingController(text: "");
+  
+  Object? get list => null;
 
   @override
   void dispose() {
@@ -60,7 +63,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
     _cubit = BlocProvider.of<CategoryCubit>(context);
     _getUserId();
     _getVillageId();
-    _getSearchCat(value);
+    _getSearchCat("");
     _searchController.addListener(_printLatestValue);
     super.initState();
   }
@@ -86,6 +89,38 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
   //       ),
   //     );
   // }
+
+
+  // This function is called whenever the text field changes
+  void _runFilter(list, value) {
+    print(value);
+    print(list.map((data) => data.name));
+    // print(list[0]);
+    // setState(() {
+    _getSearchCat(value);
+    // });
+    // print(List.length);
+    // var result=(from c in List where c.name.StartsWith("Mc") select c).ToList();
+
+    // setState(() {
+    //   _getSearchCat(value);
+    // });
+    var results = null;
+    if (value.isEmpty) {
+      print("if");
+      // if the search field is empty or only contains white-space, we'll display all users
+      results = list[0];
+    } else {
+      print("else");
+      results = list[0];
+      print("thisis>>>>${results}");
+      return results;
+    //   print("data not empty");
+    //   results = List.where((user) => user["name"].toLowerCase().contains(value.toLowerCase())).toList();
+    //   // we use the toLowerCase() method to make it case-insensitive
+    // print("results>>>>${results}");
+    }
+  }
 
   @override
   Widget setView() {
@@ -131,6 +166,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
                 body: Container(
                   color: AppColors.letsStartBackground,
                   child: Column(children: [
+                    SearchCat(state.categoryData),
                     CategoryList(state.categoryData),
 
                   ]),
@@ -155,13 +191,26 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
         });
   }
 
-  Widget CategoryList(List<CategoryData> list) {
+
+
+  Widget CategoryList(List<dynamic> list) {
     return SizedBox(
       height: 100.h - 220,
       child: Container(
         color: AppColors.letsStartBackground,
         child: Column(
           children: [
+            // CupertinoSearchTextField(
+            //     // controller: _searchController.Text,
+            //     onChanged: (value){
+            //     // controller: _searchController.text = value;
+            //     // _getSearchCat(value);
+            //     // print(list.map((data) => data.name));
+            //     _runFilter(list, value);
+            //     // var data;
+            //     // final list1 = list.firstWhere((e) => e.name == "");
+            //     // print(list1.map((data) => data.name));
+            //     }),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 3,
@@ -184,7 +233,7 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
                               Screen.PostPage.toString(),
                               arguments: bundle,
                             ).then((_) {
-                              _cubit.getCategoryInfo(userID);
+                              // _cubit.getCategoryInfo(userID);
 
                           /*    setState(() {
                                 _getVillageId();
@@ -257,6 +306,33 @@ class _CategoryPageState extends AppScreenState<CategoryPage> {
     );
   }
 
+
+
+Widget SearchCat(List<dynamic> list) {
+    return SizedBox(
+      // height: 100.h - 220,
+      child: Container(
+        color: AppColors.letsStartBackground,
+        child: Column(
+          children: [
+            CupertinoSearchTextField(
+                // controller: _searchController.Text,
+                onChanged: (value){
+                // controller: _searchController.text = value;
+                // _getSearchCat(value);
+                // print(list.map((data) => data.name));
+                  _runFilter(list, value);
+                // _runFilter(list, value);
+                // var data;
+                // final list1 = list.firstWhere((e) => e.name == "");
+                // print(list1.map((data) => data.name));
+                }),
+          ],
+        ),
+      ),
+    );
+  }
+
   _getUserId() async {
     _dataHelper.cacheHelper.getUserInfo().then((value) {
       setState(() {
@@ -294,25 +370,25 @@ _appBar(height, BuildContext context, CategoryState state, textTheme, TextEditin
             width: double.infinity,
                 height: 40,
                 color: Colors.white,
-                child: Center(
-                // padding: const EdgeInsets.all(10.0),
-                child: CupertinoSearchTextField(
-                // controller: _searchController.Text,
-                onChanged: (value){
-                // controller: _searchController.text = value;
-                _getSearchCat(value);
-                },
-                // onSubmitted: () {},
-                prefixInsets: EdgeInsets.only(left: 20),
-                suffixInsets: EdgeInsets.only(right: 20),
-                itemSize: 30,
-                itemColor: Color.fromARGB(255, 2, 58, 243),
-                // controller: _searchController,
-                // autocorrect: true,
-                  ),
+                // child: Center(
+                // // padding: const EdgeInsets.all(10.0),
+                // child: CupertinoSearchTextField(
+                // // controller: _searchController.Text,
+                // onChanged: (value){
+                // // controller: _searchController.text = value;
+                // _getSearchCat(value);
+                // },
+                // // onSubmitted: () {},
+                // prefixInsets: EdgeInsets.only(left: 20),
+                // suffixInsets: EdgeInsets.only(right: 20),
+                // itemSize: 30,
+                // itemColor: Color.fromARGB(255, 2, 58, 243),
+                // // controller: _searchController,
+                // // autocorrect: true,
+                //   ),
                 ),
 
-              ),
+          //     ),
           // Container(), // Required some widget in between to float AppBar
           // Positioned(
           //   // To take AppBar Size only

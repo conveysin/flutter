@@ -51,4 +51,6 @@ class CategoryData {
     data['logo'] = this.logo;
     return data;
   }
+
+  Object? map(Function(dynamic data) param0) {}
 }

@@ -15,7 +15,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   CategoryCubit()
       : super(
     CategoryState(
-categoryData:<CategoryData>[],
+categoryData:[],
       // villageData: [],
       // mandalData: [],
       // districtData: []
@@ -66,5 +66,7 @@ categoryData:<CategoryData>[],
 
     });
   }
+
+  void dispose() {}
 
 }
